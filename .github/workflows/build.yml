@@ -2,7 +2,7 @@ name: Java CI with Maven & Security Scan
 
 on:
   push:
-    branches: [ "main", "develop" ]
+    branches: [ "main", "develop", "desarrollo-apis" ]
   pull_request:
     branches: [ "main" ]
 
