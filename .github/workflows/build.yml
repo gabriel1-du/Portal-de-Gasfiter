@@ -21,12 +21,14 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Compilar y Ejecutar Tests
-      run: mvn -B package 
+    - name: Compilar y Ejecutar Tests (usuarioApi)
+      run: mvn -B package
+      working-directory: Apis/usuarioApi
 
-    - name: Análisis de Seguridad (Dependency Check)
-      # Ppaso que busca si las librerías (pom.xml) tienen fallos conocidos
+    - name: Análisis de Seguridad (Dependency Check - usuarioApi)
+      # Paso que busca si las librerías (pom.xml) tienen fallos conocidos
       run: mvn org.owasp:dependency-check-maven:check
+      working-directory: Apis/usuarioApi
       continue-on-error: true # Para que no bloquee todo si encuentra algo menor al inicio
 
   code-quality:
