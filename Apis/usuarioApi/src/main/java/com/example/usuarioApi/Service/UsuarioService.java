@@ -14,7 +14,9 @@ public interface UsuarioService {
 
     leerUsuarioDTO actualizarUsuario(Integer id, actualizarUserDTO usuarioDTO);
 
-    void eliminarUsuario(Integer id, eliminarUserDTO deleteDTO);
+    void eliminarUsuario(Integer id);
+
+    void eliminarUsuarioConIngresoContraseña(Integer id, eliminarUserDTO deleteDTO); // Método para eliminar un usuario con confirmación de contraseña
 
     leerUsuarioDTO actualizarUsuarioAdmin(Integer id, actualizarUsuarioDTOAdmin usuarioDTO);
 

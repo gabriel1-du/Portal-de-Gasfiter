@@ -1,12 +1,13 @@
 package com.example.usuarioApi.Controller;
 
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.actualizarUserDTO;
+import com.example.usuarioApi.DTO.clasesUsuarioDTO.eliminarUserDTO;
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.crearUsuarioDTO;
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.leerUsuarioDTO;
 
 import com.example.usuarioApi.Service.UsuarioService;
 
-import jakarta.persistence.Id;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,7 +43,14 @@ public class UsuarioController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarUsuario(@PathVariable Integer id) {
-        usuarioService.eliminarUsuario(id, null); // Eliminar el usuario sin necesidad de un DTO adicional
+        usuarioService.eliminarUsuario(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    //Metodo para eliminar un usuario con confirmación de contraseña
+    @DeleteMapping("/confirmacionContraseña/{id}")
+    public ResponseEntity<Void> eliminarUsuarioConfirmacionContra(@PathVariable Integer id, @RequestBody eliminarUserDTO deleteDTO) {
+        usuarioService.eliminarUsuarioConIngresoContraseña(id, deleteDTO);
         return ResponseEntity.noContent().build();
     }
    

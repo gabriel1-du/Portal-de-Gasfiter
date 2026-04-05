@@ -77,14 +77,35 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public void eliminarUsuario(Integer id, eliminarUserDTO deleteDTO) {
-
+    public void eliminarUsuario(Integer id) {
         Usuario usuarioExitente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + id));
         usuarioRepository.delete(usuarioExitente);
 
     }
         
+    @Override
+    public void eliminarUsuarioConIngresoContraseña(Integer id, eliminarUserDTO deleteDTO) {
+    
+        Usuario usuarioExistente = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + id));
+
+    
+        if (deleteDTO == null || deleteDTO.getPasswordConfirmacion() == null || deleteDTO.getPasswordConfirmacion().trim().isEmpty()) {
+            throw new RuntimeException("La contraseña de confirmación es requerida para eliminar la cuenta.");
+        }
+
+        // Se corrabora si es la contraseña ingresada coincide con la contraseña almacenada del usuario, utilizando el PasswordEncoder para comparar el hash.
+        boolean contrasenasCoinciden = passwordEncoder.matches(deleteDTO.getPasswordConfirmacion(), usuarioExistente.getPassword());
+
+        // Si las contraseñas no coinciden, lanzar una excepción.
+        if (!contrasenasCoinciden) {
+            throw new RuntimeException("La contraseña es incorrecta. No se puede eliminar la cuenta.");
+        }
+
+        
+        usuarioRepository.delete(usuarioExistente);
+    }
 
     @Override
     public leerUsuarioDTO actualizarUsuarioAdmin(Integer id, actualizarUsuarioDTOAdmin usuarioDTO) {
