@@ -1,0 +1,165 @@
+package com.example.usuarioApi.DTO.clasesUsuarioDTO;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.example.usuarioApi.Model.Comuna;
+import com.example.usuarioApi.Model.Oficio;
+import com.example.usuarioApi.Model.Region;
+import com.example.usuarioApi.Model.SexoUsuario;
+import com.example.usuarioApi.Model.TipoUsuario;
+import com.example.usuarioApi.Model.Usuario;
+import com.example.usuarioApi.Repository.ComunaRepository;
+import com.example.usuarioApi.Repository.OficioRepository;
+import com.example.usuarioApi.Repository.RegionRepository;
+import com.example.usuarioApi.Repository.SexoUsuarioRepository;
+import com.example.usuarioApi.Repository.TipoUsuarioRepository;
+
+@Component
+public class usuarioMapTo {
+
+    @Autowired
+    private SexoUsuarioRepository sexoRepository;
+    @Autowired
+    private TipoUsuarioRepository tipoUsuarioRepository;
+    @Autowired
+    private RegionRepository regionRepository;
+    @Autowired
+    private ComunaRepository comunaRepository;
+    @Autowired
+    private OficioRepository oficioRepository;
+
+    //Metodo para convertir ususario a lectura
+    public leerUsuarioDTO mapUsuarioToLeerUsuarioDTO(Usuario usuario) {
+        leerUsuarioDTO dto = new leerUsuarioDTO();
+    
+        dto.setIdUsuario(usuario.getIdUsuario());
+        dto.setPrimerNombre(usuario.getPNombre());
+        dto.setSegundoNombre(usuario.getSNombre());
+        dto.setPrimerApellido(usuario.getPApellido());
+        dto.setSegundoApellido(usuario.getSApellido());
+        dto.setCorreoElec(usuario.getCorreoElec());
+        dto.setRut(usuario.getRut());
+        dto.setRutDv(usuario.getRutDv());
+        dto.setNumeroTelef(usuario.getNumeroTelef());
+        dto.setFoto(usuario.getFoto());
+        dto.setValoracion(usuario.getValoracion());
+        dto.setFechaCreacion(usuario.getFechaCreacion());
+
+        
+        if (usuario.getSexo() != null) dto.setNombreSexo(usuario.getSexo().getNombreSexo());
+        if (usuario.getTipoUsuario() != null) dto.setNombreTipoUsu(usuario.getTipoUsuario().getNombreRol());
+        if (usuario.getRegion() != null) dto.setNombreRegion(usuario.getRegion().getNombreRegion());
+        if (usuario.getComuna() != null) dto.setNombreComuna(usuario.getComuna().getNombreComuna());
+        if (usuario.getOficio() != null) dto.setNombreOficio(usuario.getOficio().getNombreOficio());
+
+        return dto;
+    }
+
+
+    //Metodo para convertir ususario a crear
+     public Usuario mapCrearUsuarioDTOToUsuario(crearUsuarioDTO dto) {
+        Usuario usuario = new Usuario();
+
+        // Mapeo de datos personales, con "N" como valor por defecto para strings vacíos o nulos.
+        usuario.setPNombre(defaultIfBlank(dto.getPrimerNombre(), "N"));
+        usuario.setSNombre(defaultIfBlank(dto.getSegundoNombre(), "N"));
+        usuario.setPApellido(defaultIfBlank(dto.getPrimerApellido(), "N"));
+        usuario.setSApellido(defaultIfBlank(dto.getSegundoApellido(), "N"));
+
+        // Mapeo de credenciales y datos de identificación.
+        usuario.setCorreoElec(dto.getCorreoElec());
+        usuario.setPassword(dto.getPassword()); // La contraseña DEBE ser hasheada en el servicio.
+        usuario.setRut(defaultIfBlank(dto.getRut(), "N"));
+        usuario.setRutDv(defaultIfBlank(dto.getRutDv(), "N"));
+        usuario.setNumeroTelef(defaultIfBlank(dto.getNumeroTelef(), "N"));
+
+        // Mapeo de relaciones (IDs a Entidades).
+        // Si el ID es null, la relación no se establece.
+        // Si el ID no es null pero no se encuentra la entidad, se lanza una excepción para detener la creación.
+        if (dto.getIdSexoUsu() != null) {
+            SexoUsuario sexo = sexoRepository.findById(dto.getIdSexoUsu())
+                    .orElseThrow(() -> new RuntimeException("Sexo no encontrado con id: " + dto.getIdSexoUsu()));
+            usuario.setSexo(sexo);
+        }
+        if (dto.getIdTipoUsu() != null) {
+            TipoUsuario tipoUsuario = tipoUsuarioRepository.findById(dto.getIdTipoUsu())
+                    .orElseThrow(() -> new RuntimeException("Tipo de Usuario no encontrado con id: " + dto.getIdTipoUsu()));
+            usuario.setTipoUsuario(tipoUsuario);
+        }
+        if (dto.getIdRegionUsu() != null) {
+            Region region = regionRepository.findById(dto.getIdRegionUsu())
+                    .orElseThrow(() -> new RuntimeException("Región no encontrada con id: " + dto.getIdRegionUsu()));
+            usuario.setRegion(region);
+        }
+        if (dto.getIdComunaUsu() != null) {
+            Comuna comuna = comunaRepository.findById(dto.getIdComunaUsu())
+                    .orElseThrow(() -> new RuntimeException("Comuna no encontrada con id: " + dto.getIdComunaUsu()));
+            usuario.setComuna(comuna);
+        }
+        if (dto.getIdOficio() != null) {
+            Oficio oficio = oficioRepository.findById(dto.getIdOficio())
+                    .orElseThrow(() -> new RuntimeException("Oficio no encontrado con id: " + dto.getIdOficio()));
+            usuario.setOficio(oficio);
+        }
+        return usuario;
+    }
+
+    public leerUsuarioDTO mapEditarActualizarDTOToUsuario(actualizarUserDTO dto, Usuario usuario) {
+        // Mapeo de datos personales, solo si no son nulos en el DTO.
+        if (dto.getPrimerNombre() != null) {
+            usuario.setPNombre(defaultIfBlank(dto.getPrimerNombre(), "N"));
+        }
+        if (dto.getSegundoNombre() != null) {
+            usuario.setSNombre(defaultIfBlank(dto.getSegundoNombre(), "N"));
+        }
+        if (dto.getPrimerApellido() != null) {
+            usuario.setPApellido(defaultIfBlank(dto.getPrimerApellido(), "N"));
+        }
+        if (dto.getSegundoApellido() != null) {
+            usuario.setSApellido(defaultIfBlank(dto.getSegundoApellido(), "N"));
+        }
+
+        // Mapeo de otros datos, solo si no son nulos.
+        if (dto.getCorreoElec() != null) {
+            usuario.setCorreoElec(dto.getCorreoElec());
+        }
+        if (dto.getNumeroTelef() != null) {
+            usuario.setNumeroTelef(defaultIfBlank(dto.getNumeroTelef(), "N"));
+        }
+        if (dto.getFoto() != null) {
+            usuario.setFoto(dto.getFoto());
+        }
+
+        // Mapeo de relaciones (IDs a Entidades).
+        if (dto.getIdSexoUsu() != null) {
+            SexoUsuario sexo = sexoRepository.findById(dto.getIdSexoUsu())
+                    .orElseThrow(() -> new RuntimeException("Sexo no encontrado con id: " + dto.getIdSexoUsu()));
+            usuario.setSexo(sexo);
+        }
+        if (dto.getIdRegionUsu() != null) {
+            Region region = regionRepository.findById(dto.getIdRegionUsu())
+                    .orElseThrow(() -> new RuntimeException("Región no encontrada con id: " + dto.getIdRegionUsu()));
+            usuario.setRegion(region);
+        }
+        if (dto.getIdComunaUsu() != null) {
+            Comuna comuna = comunaRepository.findById(dto.getIdComunaUsu())
+                    .orElseThrow(() -> new RuntimeException("Comuna no encontrada con id: " + dto.getIdComunaUsu()));
+            usuario.setComuna(comuna);
+        }
+        if (dto.getIdOficio() != null) {
+            Oficio oficio = oficioRepository.findById(dto.getIdOficio())
+                    .orElseThrow(() -> new RuntimeException("Oficio no encontrado con id: " + dto.getIdOficio()));
+            usuario.setOficio(oficio);
+        }
+
+        // Ahora, como se solicitó, se usa el otro método para convertir el usuario actualizado a un DTO de lectura.
+        return mapUsuarioToLeerUsuarioDTO(usuario);
+    }
+
+    //metodo que devuelve un valor por defecto si el string es nulo o está vacío, de lo contrario devuelve el string original
+    private String defaultIfBlank(String input, String defaultValue) {
+        return (input == null || input.trim().isEmpty()) ? defaultValue : input;
+    }
+
+}

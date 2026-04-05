@@ -1,7 +1,9 @@
 package com.example.usuarioApi.Controller;
 
+import com.example.usuarioApi.DTO.clasesUsuarioDTO.actualizarUserDTO;
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.crearUsuarioDTO;
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.leerUsuarioDTO;
+
 import com.example.usuarioApi.Service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,4 +30,12 @@ public class UsuarioController {
         leerUsuarioDTO usuario = usuarioService.leerUsuario(id);
         return ResponseEntity.ok(usuario);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<leerUsuarioDTO> actualizarUsuario(@PathVariable Integer id, @RequestBody actualizarUserDTO usuarioDTO) {
+        leerUsuarioDTO usuarioActualizado = usuarioService.actualizarUsuario(id, usuarioDTO);
+        return ResponseEntity.ok(usuarioActualizado);
+    }
+   
+
 }

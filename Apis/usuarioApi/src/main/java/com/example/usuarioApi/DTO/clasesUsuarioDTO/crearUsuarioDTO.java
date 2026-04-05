@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class crearUsuarioDTO {
     // Datos personales
-    private String pNombre;
-    private String sNombre;
-    private String pApellido;
-    private String sApellido;
+    private String primerNombre;
+    private String segundoNombre;
+    private String primerApellido;
+    private String segundoApellido;
     private Integer idSexoUsu;
     
     // Credenciales

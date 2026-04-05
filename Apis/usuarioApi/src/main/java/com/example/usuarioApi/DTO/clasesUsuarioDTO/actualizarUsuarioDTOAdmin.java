@@ -7,10 +7,10 @@ public class actualizarUsuarioDTOAdmin {
 
 
     // 1. Datos personales básicos
-    private String pNombre;
-    private String sNombre;
-    private String pApellido;
-    private String sApellido;
+    private String primerNombre;
+    private String segundoNombre;
+    private String primerApellido;
+    private String segundoApellido;
     private Integer idSexoUsu;
     
     // 2. Datos CRÍTICOS (Poder exclusivo del Admin)

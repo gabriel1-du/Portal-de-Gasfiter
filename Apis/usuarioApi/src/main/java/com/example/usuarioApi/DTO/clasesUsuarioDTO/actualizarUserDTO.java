@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 //Este DTO lo usa el usuario para editar su eprgil
 public class actualizarUserDTO {
 
-    private String pNombre;
-    private String sNombre;
-    private String pApellido;
-    private String sApellido;
+    private String primerNombre;
+    private String segundoNombre;
+    private String primerApellido;
+    private String segundoApellido;
     
     private Integer idSexoUsu;
     private String numeroTelef; 
