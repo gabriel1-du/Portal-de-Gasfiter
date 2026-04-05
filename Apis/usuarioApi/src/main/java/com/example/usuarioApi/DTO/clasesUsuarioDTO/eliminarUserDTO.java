@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class deleteUserDTO {
+public class eliminarUserDTO {
 
     private String passwordConfirmacion;  //El usuario debe ingresar su contraseña para confirmar la eliminación de su cuenta
 

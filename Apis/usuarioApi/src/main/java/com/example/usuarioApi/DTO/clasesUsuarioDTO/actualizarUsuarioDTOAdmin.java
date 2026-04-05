@@ -3,7 +3,7 @@ package com.example.usuarioApi.DTO.clasesUsuarioDTO;
 import lombok.Data;
 
 @Data
-public class updateUsuarioDTOAdmin {
+public class actualizarUsuarioDTOAdmin {
 
 
     // 1. Datos personales básicos

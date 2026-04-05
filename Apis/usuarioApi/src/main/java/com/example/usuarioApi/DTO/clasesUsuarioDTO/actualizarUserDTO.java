@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 
 //Este DTO lo usa el usuario para editar su eprgil
-public class updateUserDTO {
+public class actualizarUserDTO {
 
     private String pNombre;
     private String sNombre;
@@ -17,7 +17,7 @@ public class updateUserDTO {
     private String sApellido;
     
     private Integer idSexoUsu;
-    private String numeroTelef;
+    private String numeroTelef; 
     private String correoElec; 
 
     private Integer idRegionUsu;

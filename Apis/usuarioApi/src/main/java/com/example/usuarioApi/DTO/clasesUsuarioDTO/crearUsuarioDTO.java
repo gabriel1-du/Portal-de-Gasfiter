@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class createUsuarioDTO {
+public class crearUsuarioDTO {
     // Datos personales
     private String pNombre;
     private String sNombre;
