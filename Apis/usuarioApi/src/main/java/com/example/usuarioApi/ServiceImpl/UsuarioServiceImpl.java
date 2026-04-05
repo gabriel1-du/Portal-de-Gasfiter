@@ -3,6 +3,7 @@ package com.example.usuarioApi.ServiceImpl;
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.actualizarUserDTO;
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.actualizarUsuarioDTOAdmin;
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.crearUsuarioDTO;
+import com.example.usuarioApi.DTO.clasesUsuarioDTO.crearUsuarioLVL1DTO;
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.eliminarUserDTO;
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.leerUsuarioDTO;
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.usuarioMapTo;
@@ -49,8 +50,23 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
+    public leerUsuarioDTO crearUsuarioLVL1(crearUsuarioLVL1DTO usuarioDTO) {
+        // 1. Mapear el DTO de creación específico para nivel 1 a la entidad Usuario, aplicando reglas de negocio particulares.
+        Usuario usuario = mapper.mapCrearUsuarioLVL1DTOtoUsuario(usuarioDTO);
+
+        // 2. Hashear la contraseña obtenida del DTO usando el PasswordEncoder.
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+
+        // 3. Guardar la nueva entidad de usuario en la base de datos.
+        Usuario nuevoUsuario = usuarioRepository.save(usuario);
+
+        // 4. Mapear la entidad recién guardada a un DTO de lectura para la respuesta.
+        return mapper.mapUsuarioToLeerUsuarioDTO(nuevoUsuario);
+    }
+
+
+    @Override
     public leerUsuarioDTO leerUsuario(Integer id) {
-    
 
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + id)); 

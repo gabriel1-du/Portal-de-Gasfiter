@@ -3,6 +3,7 @@ package com.example.usuarioApi.Controller;
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.actualizarUserDTO;
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.eliminarUserDTO;
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.crearUsuarioDTO;
+import com.example.usuarioApi.DTO.clasesUsuarioDTO.crearUsuarioLVL1DTO;
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.leerUsuarioDTO;
 
 import com.example.usuarioApi.Service.UsuarioService;
@@ -23,11 +24,16 @@ public class UsuarioController {
 
  
     @PostMapping
-    public ResponseEntity<leerUsuarioDTO> crearUsuario(@RequestBody crearUsuarioDTO usuarioDTO) {
+    public ResponseEntity<leerUsuarioDTO> crearUsuarioRaw(@RequestBody crearUsuarioDTO usuarioDTO) {
         leerUsuarioDTO nuevoUsuario = usuarioService.crearUsuario(usuarioDTO);
         return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
     }
 
+    @PostMapping("crearUsuarioLVL1")
+    public ResponseEntity<leerUsuarioDTO> crearUsuarioLVL1(@RequestBody crearUsuarioLVL1DTO usuarioDTO) {
+        leerUsuarioDTO nuevoUsuario = usuarioService.crearUsuarioLVL1(usuarioDTO);
+        return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<leerUsuarioDTO> leerUsuario(@PathVariable Integer id) {

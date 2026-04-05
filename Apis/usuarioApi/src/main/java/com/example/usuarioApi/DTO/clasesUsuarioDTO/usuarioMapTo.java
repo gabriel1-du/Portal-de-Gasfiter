@@ -162,4 +162,43 @@ public class usuarioMapTo {
         return (input == null || input.trim().isEmpty()) ? defaultValue : input;
     }
 
+
+    public Usuario mapCrearUsuarioLVL1DTOtoUsuario(crearUsuarioLVL1DTO dto) {
+        Usuario usuario = new Usuario();
+
+        // Mapeo de datos personales, con "N" como valor por defecto para strings vacíos o nulos.
+        usuario.setPNombre(defaultIfBlank(dto.getPrimerNombre(), "N"));
+        usuario.setSNombre(defaultIfBlank(dto.getSegundoNombre(), "N"));
+        usuario.setPApellido(defaultIfBlank(dto.getPrimerApellido(), "N"));
+        usuario.setSApellido(defaultIfBlank(dto.getSegundoApellido(), "N"));
+
+        // Mapeo de credenciales y datos de identificación.
+        usuario.setCorreoElec(dto.getCorreoElec());
+        usuario.setPassword(dto.getPassword()); // La contraseña DEBE ser hasheada en el servicio.
+        usuario.setRut(null);
+        usuario.setRutDv(null);
+        usuario.setNumeroTelef(defaultIfBlank(dto.getNumeroTelef(), "N"));
+        usuario.setFoto(defaultIfBlank(dto.getFoto(), "N"));
+        usuario.setTipoUsuario(tipoUsuarioRepository.findById(1) // Asumiendo que el ID 1 corresponde a "Usuario Nivel 1"
+                .orElseThrow(() -> new RuntimeException("Tipo de Usuario no encontrado con id: 1")));
+
+        //Espacios geograficos
+        if (dto.getIdRegionUsu() != null) {
+            Region region = regionRepository.findById(dto.getIdRegionUsu())
+                    .orElseThrow(() -> new RuntimeException("Región no encontrada con id: " + dto.getIdRegionUsu()));
+            usuario.setRegion(region);
+        }
+        if (dto.getIdComunaUsu() != null) {
+            Comuna comuna = comunaRepository.findById(dto.getIdComunaUsu())
+                    .orElseThrow(() -> new RuntimeException("Comuna no encontrada con id: " + dto.getIdComunaUsu()));
+            usuario.setComuna(comuna);
+        }
+
+        // Para usuarios de nivel 1, se asignan valores por defecto a las relaciones.
+        SexoUsuario sexo = sexoRepository.findById(dto.getIdSexoUsu())
+                .orElseThrow(() -> new RuntimeException("Sexo no encontrado con id: " + dto.getIdSexoUsu()));
+        usuario.setSexo(sexo);
+        return usuario;
+    }
+
 }
