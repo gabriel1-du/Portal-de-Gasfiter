@@ -181,6 +181,7 @@ public class usuarioMapTo {
         usuario.setFoto(defaultIfBlank(dto.getFoto(), "N"));
         usuario.setTipoUsuario(tipoUsuarioRepository.findById(1) // Asumiendo que el ID 1 corresponde a "Usuario Nivel 1"
                 .orElseThrow(() -> new RuntimeException("Tipo de Usuario no encontrado con id: 1")));
+        usuario.setHabilitadorAdministrador(false);
 
         //Espacios geograficos
         if (dto.getIdRegionUsu() != null) {
