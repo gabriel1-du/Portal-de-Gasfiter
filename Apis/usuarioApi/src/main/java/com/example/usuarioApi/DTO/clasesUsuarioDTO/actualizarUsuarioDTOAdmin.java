@@ -21,7 +21,7 @@ public class actualizarUsuarioDTOAdmin {
     // 3. Permisos y Roles (Poder exclusivo del Admin)
     private Integer idTipoUsu; // Permite ascender a un Cliente a Profesional, por ejemplo
     private Boolean habilitadorAdministrador; // Convertir a otro usuario en Admin
-  
+    private String foto;
     
     // 4. Contacto y Ubicación
     private String numeroTelef;

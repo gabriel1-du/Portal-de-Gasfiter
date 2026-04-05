@@ -4,6 +4,7 @@ import com.example.usuarioApi.DTO.clasesUsuarioDTO.actualizarUserDTO;
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.actualizarUsuarioDTOAdmin;
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.crearUsuarioDTO;
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.crearUsuarioLVL1DTO;
+import com.example.usuarioApi.DTO.clasesUsuarioDTO.crearUsuarioLVL2DTO;
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.eliminarUserDTO;
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.leerUsuarioDTO;
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.usuarioMapTo;
@@ -64,6 +65,21 @@ public class UsuarioServiceImpl implements UsuarioService {
         return mapper.mapUsuarioToLeerUsuarioDTO(nuevoUsuario);
     }
 
+     @Override
+    public leerUsuarioDTO crearUsuarioLVL2(crearUsuarioLVL2DTO usuarioDTO) {
+        // 1. Mapear el DTO de creación específico para nivel 1 a la entidad Usuario, aplicando reglas de negocio particulares.
+        Usuario usuario = mapper.mapCrearUsuarioLVL2DTOtoUsuario(usuarioDTO);
+
+        // 2. Hashear la contraseña obtenida del DTO usando el PasswordEncoder.
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+
+        // 3. Guardar la nueva entidad de usuario en la base de datos.
+        Usuario nuevoUsuario = usuarioRepository.save(usuario);
+
+        // 4. Mapear la entidad recién guardada a un DTO de lectura para la respuesta.
+        return mapper.mapUsuarioToLeerUsuarioDTO(nuevoUsuario);
+    }
+
 
     @Override
     public leerUsuarioDTO leerUsuario(Integer id) {
@@ -83,7 +99,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + id));
 
         // 2. Usar el mapper para aplicar los cambios del DTO a la entidad existente.
-        mapper.mapEditarActualizarDTOToUsuario(usuarioDTO, usuarioExistente);
+        mapper.mapActualizarDTOToUsuario(usuarioDTO, usuarioExistente);
 
         // 3. Guardar la entidad que fue modificada.
         Usuario usuarioGuardado = usuarioRepository.save(usuarioExistente);
@@ -125,8 +141,20 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public leerUsuarioDTO actualizarUsuarioAdmin(Integer id, actualizarUsuarioDTOAdmin usuarioDTO) {
-        // TODO: Implementar la lógica para actualizar un usuario como administrador.
-        throw new UnsupportedOperationException("El método 'actualizarUsuarioAdmin' aún no ha sido implementado.");
+        // 1. Buscar el usuario existente en la base de datos.
+        Usuario usuarioExistente = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + id));
+
+        // 2. Usar el mapper para aplicar los cambios del DTO de admin a la entidad existente.
+        // El objeto 'usuarioExistente' se modifica por referencia dentro de este método.
+        mapper.mapActualizarDTOToUsuarioAdmin(usuarioDTO, usuarioExistente);
+
+        // 3. Guardar la entidad que fue modificada.
+        Usuario usuarioGuardado = usuarioRepository.save(usuarioExistente);
+
+        // 4. Mapear la entidad ya guardada al DTO de respuesta final.
+        // Es una buena práctica mapear la entidad que resulta de la operación de guardado.
+        return mapper.mapUsuarioToLeerUsuarioDTO(usuarioGuardado);
     }
 
    

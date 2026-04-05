@@ -1,9 +1,11 @@
 package com.example.usuarioApi.Controller;
 
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.actualizarUserDTO;
+import com.example.usuarioApi.DTO.clasesUsuarioDTO.actualizarUsuarioDTOAdmin;
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.eliminarUserDTO;
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.crearUsuarioDTO;
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.crearUsuarioLVL1DTO;
+import com.example.usuarioApi.DTO.clasesUsuarioDTO.crearUsuarioLVL2DTO;
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.leerUsuarioDTO;
 
 import com.example.usuarioApi.Service.UsuarioService;
@@ -35,6 +37,12 @@ public class UsuarioController {
         return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
     }
 
+    @PostMapping("crearUsuarioLVL2")
+    public ResponseEntity<leerUsuarioDTO> crearUsuarioLVL2(@RequestBody crearUsuarioLVL2DTO usuarioDTO) {
+        leerUsuarioDTO nuevoUsuario = usuarioService.crearUsuarioLVL2(usuarioDTO);
+        return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<leerUsuarioDTO> leerUsuario(@PathVariable Integer id) {
         leerUsuarioDTO usuario = usuarioService.leerUsuario(id);
@@ -58,6 +66,12 @@ public class UsuarioController {
     public ResponseEntity<Void> eliminarUsuarioConfirmacionContra(@PathVariable Integer id, @RequestBody eliminarUserDTO deleteDTO) {
         usuarioService.eliminarUsuarioConIngresoContraseña(id, deleteDTO);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/actualziacionAdmin/{id}")
+    public ResponseEntity<leerUsuarioDTO> actualizarUsuarioAdmin(@PathVariable Integer id, @RequestBody actualizarUsuarioDTOAdmin usuarioDTO) {
+        leerUsuarioDTO usuarioActualizado = usuarioService.actualizarUsuarioAdmin(id, usuarioDTO);
+        return ResponseEntity.ok(usuarioActualizado);
     }
    
 

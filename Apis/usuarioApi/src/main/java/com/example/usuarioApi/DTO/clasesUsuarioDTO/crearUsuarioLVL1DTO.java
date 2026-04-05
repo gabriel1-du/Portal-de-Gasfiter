@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class crearUsuarioLVL1DTO {
     
-     // Datos personales
+    // Datos personales
     private String primerNombre;
     private String segundoNombre;
     private String primerApellido;

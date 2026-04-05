@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class crearUsuarioDTO {
+public class crearUsuarioLVL2DTO {
+
     // Datos personales
     private String primerNombre;
     private String segundoNombre;
@@ -33,6 +34,7 @@ public class crearUsuarioDTO {
     private Integer idRegionUsu;
     private Integer idComunaUsu;
     private Integer idOficio;
-    private boolean habilitadorAdministrador; 
 
+
+ 
 }
