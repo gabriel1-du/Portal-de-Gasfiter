@@ -26,4 +26,6 @@ public interface UsuarioService {
 
     leerUsuarioDTO crearUsuarioLVL2(crearUsuarioLVL2DTO usuarioDTO); // Método específico para crear usuarios de nivel 1 (Usuario no administrador/profesional)
 
+    //Metodos para iniciar sesión
+    leerUsuarioDTO iniciarSesion(String correoElec, String password); 
 }

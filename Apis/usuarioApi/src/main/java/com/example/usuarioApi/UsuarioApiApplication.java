@@ -17,8 +17,6 @@ public class UsuarioApiApplication {
         dotenv.entries().forEach(entry -> 
             System.setProperty(entry.getKey(), entry.getValue())
         );
-
-
 		SpringApplication.run(UsuarioApiApplication.class, args);
 	}
 

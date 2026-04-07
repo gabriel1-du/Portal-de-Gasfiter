@@ -40,6 +40,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     @Override
     public leerUsuarioDTO crearUsuario(crearUsuarioDTO usuarioDTO) {
     
@@ -163,6 +164,20 @@ public class UsuarioServiceImpl implements UsuarioService {
         // 4. Mapear la entidad ya guardada al DTO de respuesta final.
         // Es una buena práctica mapear la entidad que resulta de la operación de guardado.
         return readMapper.mapUsuarioToLeerUsuarioDTO(usuarioGuardado);
+    }
+
+
+    //metodo para iniciar sesion 
+    @Override
+    public leerUsuarioDTO iniciarSesion(String correoElec, String password) {
+        Usuario usuario = usuarioRepository.findByCorreoElec(correoElec)
+                .orElseThrow(() -> new RuntimeException("Credenciales no validas"));
+
+        if (!passwordEncoder.matches(password, usuario.getPassword())) {
+            throw new RuntimeException("Credenciales no validas");
+        }
+
+        return readMapper.mapUsuarioToLeerUsuarioDTO(usuario);
     }
 
    
