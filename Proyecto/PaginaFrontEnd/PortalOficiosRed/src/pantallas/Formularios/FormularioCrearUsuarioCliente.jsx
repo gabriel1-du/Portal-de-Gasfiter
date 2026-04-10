@@ -2,44 +2,9 @@ import React from 'react';
 import { useState } from 'react';
 import { crearUsuarioCliente } from '../../servicios/usuariosService'; // Importa la función del servicio
 
+import '../../style/formulacioCreacionUsuario.css'; // Importa el nuevo archivo CSS
+
 function FormularioCrearUsuarioCliente() {
-  // Estilos básicos en línea para que el formulario sea legible por ahora
-  const formStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    maxWidth: '400px',
-    margin: '20px auto',
-    padding: '20px',
-    border: '1px solid #ccc',
-    borderRadius: '8px',
-    backgroundColor: '#f9f9f9',
-  };
-
-  const labelStyle = {
-    marginBottom: '5px',
-    marginTop: '10px',
-    fontWeight: 'bold',
-    textAlign: 'left',
-  };
-
-  const inputStyle = {
-    padding: '8px',
-    marginBottom: '10px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-  };
-
-  const buttonStyle = {
-    padding: '10px 15px',
-    backgroundColor: 'orange',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    marginTop: '20px',
-    fontSize: '16px',
-  };
-
   // Estado para cada campo del formulario
   const [formData, setFormData] = useState({
     primerNombre: '',
@@ -112,32 +77,56 @@ function FormularioCrearUsuarioCliente() {
       <h1>Crear Cuenta de Usuario</h1>
       <p>Por favor, completa los siguientes datos para crear tu cuenta.</p>
       {mensaje && <p>{mensaje}</p>} {/* Muestra el mensaje de estado */}
-      <form style={formStyle} onSubmit={handleSubmit}>
-        <label htmlFor="primerNombre" style={labelStyle}>Primer Nombre:</label>
-        <input type="text" id="primerNombre" name="primerNombre" value={formData.primerNombre} onChange={handleChange} style={inputStyle} required />
-        <label htmlFor="segundoNombre" style={labelStyle}>Segundo Nombre:</label>
-        <input type="text" id="segundoNombre" name="segundoNombre" value={formData.segundoNombre} onChange={handleChange} style={inputStyle} />
-        <label htmlFor="primerApellido" style={labelStyle}>Primer Apellido:</label>
-        <input type="text" id="primerApellido" name="primerApellido" value={formData.primerApellido} onChange={handleChange} style={inputStyle} required />
-        <label htmlFor="segundoApellido" style={labelStyle}>Segundo Apellido:</label>
-        <input type="text" id="segundoApellido" name="segundoApellido" value={formData.segundoApellido} onChange={handleChange} style={inputStyle} />
-        <label htmlFor="idSexoUsu" style={labelStyle}>ID Sexo:</label>
-        <input type="number" id="idSexoUsu" name="idSexoUsu" value={formData.idSexoUsu} onChange={handleChange} style={inputStyle} required />
-        <label htmlFor="foto" style={labelStyle}>URL de la Foto:</label>
-        <input type="text" id="foto" name="foto" value={formData.foto} onChange={handleChange} style={inputStyle} placeholder="https://ejemplo.com/tu-foto.jpg" />
-        <label htmlFor="correoElec" style={labelStyle}>Correo Electrónico:</label>
-        <input type="email" id="correoElec" name="correoElec" value={formData.correoElec} onChange={handleChange} style={inputStyle} required />
-        <label htmlFor="password" style={labelStyle}>Contraseña:</label>
-        <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} style={inputStyle} required />
-        <label htmlFor="numeroTelef" style={labelStyle}>Número de Teléfono:</label>
-        <input type="tel" id="numeroTelef" name="numeroTelef" value={formData.numeroTelef} onChange={handleChange} style={inputStyle} required />
-        <label htmlFor="idTipoUsu" style={labelStyle}>ID Tipo de Usuario:</label>
-        <input type="number" id="idTipoUsu" name="idTipoUsu" value={formData.idTipoUsu} onChange={handleChange} style={inputStyle} required />
-        <label htmlFor="idRegionUsu" style={labelStyle}>ID Región (Opcional):</label>
-        <input type="number" id="idRegionUsu" name="idRegionUsu" value={formData.idRegionUsu} onChange={handleChange} style={inputStyle} />
-        <label htmlFor="idComunaUsu" style={labelStyle}>ID Comuna (Opcional):</label>
-        <input type="number" id="idComunaUsu" name="idComunaUsu" value={formData.idComunaUsu} onChange={handleChange} style={inputStyle} />
-        <button type="submit" style={buttonStyle}>Registrarse</button>
+      <form className="form-container" onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="primerNombre">Primer Nombre:</label>
+          <input type="text" id="primerNombre" name="primerNombre" value={formData.primerNombre} onChange={handleChange} required />
+        </div>
+        <div className="form-group">
+          <label htmlFor="segundoNombre">Segundo Nombre:</label>
+          <input type="text" id="segundoNombre" name="segundoNombre" value={formData.segundoNombre} onChange={handleChange} />
+        </div>
+        <div className="form-group">
+          <label htmlFor="primerApellido">Primer Apellido:</label>
+          <input type="text" id="primerApellido" name="primerApellido" value={formData.primerApellido} onChange={handleChange} required />
+        </div>
+        <div className="form-group">
+          <label htmlFor="segundoApellido">Segundo Apellido:</label>
+          <input type="text" id="segundoApellido" name="segundoApellido" value={formData.segundoApellido} onChange={handleChange} />
+        </div>
+        <div className="form-group">
+          <label htmlFor="idSexoUsu">ID Sexo:</label>
+          <input type="number" id="idSexoUsu" name="idSexoUsu" value={formData.idSexoUsu} onChange={handleChange} required />
+        </div>
+        <div className="form-group">
+          <label htmlFor="foto">URL de la Foto:</label>
+          <input type="text" id="foto" name="foto" value={formData.foto} onChange={handleChange} placeholder="https://ejemplo.com/tu-foto.jpg" />
+        </div>
+        <div className="form-group">
+          <label htmlFor="correoElec">Correo Electrónico:</label>
+          <input type="email" id="correoElec" name="correoElec" value={formData.correoElec} onChange={handleChange} required />
+        </div>
+        <div className="form-group">
+          <label htmlFor="password">Contraseña:</label>
+          <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required />
+        </div>
+        <div className="form-group">
+          <label htmlFor="numeroTelef">Número de Teléfono:</label>
+          <input type="tel" id="numeroTelef" name="numeroTelef" value={formData.numeroTelef} onChange={handleChange} required />
+        </div>
+        <div className="form-group">
+          <label htmlFor="idTipoUsu">ID Tipo de Usuario:</label>
+          <input type="number" id="idTipoUsu" name="idTipoUsu" value={formData.idTipoUsu} onChange={handleChange} required />
+        </div>
+        <div className="form-group">
+          <label htmlFor="idRegionUsu">ID Región (Opcional):</label>
+          <input type="number" id="idRegionUsu" name="idRegionUsu" value={formData.idRegionUsu} onChange={handleChange} />
+        </div>
+        <div className="form-group">
+          <label htmlFor="idComunaUsu">ID Comuna (Opcional):</label>
+          <input type="number" id="idComunaUsu" name="idComunaUsu" value={formData.idComunaUsu} onChange={handleChange} />
+        </div>
+        <button type="submit" className="form-submit-button">Registrarse</button>
       </form>
     </div>
   );

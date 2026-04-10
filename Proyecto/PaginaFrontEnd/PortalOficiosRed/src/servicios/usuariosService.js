@@ -41,3 +41,26 @@ export const crearUsuarioCliente = async (datosUsuario) => {
     console.error("Algo falló en la petición para crear el usuario:", error);
   }
 };
+
+//
+export const crearUsuarioOficio= async (datosUsuario) => {
+  try {
+    const response = await fetch(`${API_URL_USUARIOS}/crearUsuarioLVL2`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(datosUsuario),
+    });
+
+    if (response.ok) {
+      console.log("usuario exitosamenre creado");
+      return await response.json();
+    } else {
+      const errorTexto = await response.text();
+      console.error("Erroneo, no se pudo crear el usuario. Respuesta del servidor:", errorTexto);
+    }
+  } catch (error) {
+    console.error("Algo falló en la petición para crear el usuario:", error);
+  }
+};

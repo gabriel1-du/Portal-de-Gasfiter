@@ -14,8 +14,9 @@ function Login() {
       <h1>Bienvenido a Ofires</h1>
       <p>Un espacio para que tecnicos y profesionales compartan sus servicios y conocimientos</p>
       <div className="button-container">
-        <button className="button-style">Iniciar Sesión</button>
-        <button className="button-style" onClick={() => navigate('/crear-cuenta')}>Crear Cuenta</button>
+        <button className="button-style" onClick={() => navigate('/iniciar-sesion')}>Iniciar Sesión</button>
+        <button className="button-style" onClick={() => navigate('/crear-cuentOfi')}>Crear cuenta con Oficio</button>
+        <button className="button-style" onClick={() => navigate('/crear-cuenta')}>Crear cuenta como cliente</button>
       </div>
     </div>
   );
