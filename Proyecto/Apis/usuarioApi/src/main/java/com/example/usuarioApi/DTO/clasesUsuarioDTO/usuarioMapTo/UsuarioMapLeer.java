@@ -1,16 +1,11 @@
 package com.example.usuarioApi.DTO.clasesUsuarioDTO.usuarioMapTo;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.example.usuarioApi.DTO.clasesUsuarioDTO.leerUsuarioDTO;
 
 import com.example.usuarioApi.Model.Usuario;
-import com.example.usuarioApi.Repository.ComunaRepository;
-import com.example.usuarioApi.Repository.OficioRepository;
-import com.example.usuarioApi.Repository.RegionRepository;
-import com.example.usuarioApi.Repository.SexoUsuarioRepository;
-import com.example.usuarioApi.Repository.TipoUsuarioRepository;
+
 
 @Component
 public class UsuarioMapLeer {
@@ -41,13 +36,6 @@ public class UsuarioMapLeer {
         if (usuario.getOficio() != null) dto.setNombreOficio(usuario.getOficio().getNombreOficio());
 
         return dto;
-    }
-
-
-   
-    //metodo que devuelve un valor por defecto si el string es nulo o está vacío, de lo contrario devuelve el string original
-    private String defaultIfBlank(String input, String defaultValue) {
-        return (input == null || input.trim().isEmpty()) ? defaultValue : input;
     }
 
 
