@@ -1,4 +1,4 @@
-package com.gateway.redireccionApis.ApiUsuarios;
+package com.gateway.redireccionApis.ApiUsuarios.Usuario;
 
 public class UsuarioPublicRoutes {
 

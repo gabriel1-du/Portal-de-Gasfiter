@@ -15,7 +15,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.http.HttpMethod; // Asegúrate de importar esto arriba
 import static com.gateway.jwt.security.PublicRoutes.*; //importa las rutas publicas de jwt
-import static com.gateway.redireccionApis.ApiUsuarios.UsuarioPublicRoutes.USUARIO_PUBLIC_GET; //Importa las rutas publicas de usuario
+import static com.gateway.redireccionApis.ApiUsuarios.Region.RegionPublicRoutes.REGION_PUBLIC_GET;
+import static com.gateway.redireccionApis.ApiUsuarios.Usuario.UsuarioPublicRoutes.USUARIO_PUBLIC_GET;
 
 import java.util.Arrays;
 
@@ -41,6 +42,9 @@ public class SecurityConfig {
                 // URL públicas API Gestion
                 .requestMatchers(HttpMethod.GET, USUARIO_PUBLIC_GET).permitAll()   // lista pública api GESTION GET
                 .requestMatchers(HttpMethod.POST, "/api/proxy/usuariosApi/**").permitAll()
+
+                // URL públicas API Regiones
+                .requestMatchers(HttpMethod.GET, REGION_PUBLIC_GET).permitAll()
 
                 // Otras URL Token obligatorio
                 .anyRequest().authenticated()
