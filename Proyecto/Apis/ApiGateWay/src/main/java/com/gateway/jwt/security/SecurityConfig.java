@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.http.HttpMethod; // Asegúrate de importar esto arriba
 import static com.gateway.jwt.security.PublicRoutes.*; //importa las rutas publicas de jwt
 import static com.gateway.redireccionApis.ApiUsuarios.Region.RegionPublicRoutes.REGION_PUBLIC_GET;
+import static com.gateway.redireccionApis.ApiUsuarios.Comuna.ComunaPublicRoutes.COMUNA_PUBLIC_GET;
 import static com.gateway.redireccionApis.ApiUsuarios.Usuario.UsuarioPublicRoutes.USUARIO_PUBLIC_GET;
 
 import java.util.Arrays;
@@ -45,6 +46,9 @@ public class SecurityConfig {
 
                 // URL públicas API Regiones
                 .requestMatchers(HttpMethod.GET, REGION_PUBLIC_GET).permitAll()
+
+                // URL públicas API Comunas
+                .requestMatchers(HttpMethod.GET, COMUNA_PUBLIC_GET).permitAll()
 
                 // Otras URL Token obligatorio
                 .anyRequest().authenticated()
