@@ -134,6 +134,8 @@ public class UsuarioMapCreate {
         return usuario;
     }
 
+
+    
      public Usuario mapCrearUsuarioLVL2DTOtoUsuario(crearUsuarioLVL2DTO dto) {
         Usuario usuario = new Usuario();
 
@@ -150,13 +152,15 @@ public class UsuarioMapCreate {
         usuario.setRutDv(dto.getRutDv());
         usuario.setNumeroTelef(defaultIfBlank(dto.getNumeroTelef(), "N"));
         usuario.setFoto(defaultIfBlank(dto.getFoto(), "N"));
-        usuario.setTipoUsuario(tipoUsuarioRepository.findById(1) // Asumiendo que el ID 1 corresponde a "Usuario Nivel 1"
-                .orElseThrow(() -> new RuntimeException("Tipo de Usuario no encontrado con id: 1")));
+        if (dto.getIdTipoUsu() != null) {
+            TipoUsuario tipoUsuario = tipoUsuarioRepository.findById(dto.getIdTipoUsu())
+                    .orElseThrow(() -> new RuntimeException("Tipo de Usuario no encontrado con id: " + dto.getIdTipoUsu()));
+            usuario.setTipoUsuario(tipoUsuario);
+        }
         usuario.setHabilitadorAdministrador(false);
         usuario.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
         // Valor por defecto de 0.0 si no se proporciona
         usuario.setValoracion(dto.getValoracion() != null ? java.math.BigDecimal.valueOf(dto.getValoracion()) : java.math.BigDecimal.ZERO); 
-        
         
         
         //Espacios geograficos
@@ -169,6 +173,11 @@ public class UsuarioMapCreate {
             Comuna comuna = comunaRepository.findById(dto.getIdComunaUsu())
                     .orElseThrow(() -> new RuntimeException("Comuna no encontrada con id: " + dto.getIdComunaUsu()));
             usuario.setComuna(comuna);
+        }
+        if (dto.getIdOficio() != null) {
+            Oficio oficio = oficioRepository.findById(dto.getIdOficio())
+                    .orElseThrow(() -> new RuntimeException("Oficio no encontrado con id: " + dto.getIdOficio()));
+            usuario.setOficio(oficio);
         }
 
         // Para usuarios de nivel 1, se asignan valores por defecto a las relaciones.

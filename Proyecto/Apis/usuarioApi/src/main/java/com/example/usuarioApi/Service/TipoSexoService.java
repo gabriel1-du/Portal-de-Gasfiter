@@ -3,19 +3,19 @@ package com.example.usuarioApi.Service;
 import java.util.List;
 
 import com.example.usuarioApi.DTO.ClasesSexoTIpoDTO.SexoTipoDTO;
+import com.example.usuarioApi.DTO.ClasesSexoTIpoDTO.leerSexoTipoDTO;
 import com.example.usuarioApi.Model.SexoUsuario;
 
 public interface TipoSexoService {
 
-    List<SexoUsuario> leerTodasLasRegiones();
+    List<leerSexoTipoDTO> leerTodosLosSexos();
 
-    SexoUsuario leerRegionPorId(Integer id);
+    leerSexoTipoDTO leerSexoPorId(Integer id);
 
-    SexoUsuario crearRegion(SexoTipoDTO sexoTipoDTO);
+    SexoUsuario crearSexo(SexoTipoDTO sexoTipoDTO);
 
-    SexoUsuario actualizarRegion(Integer id, SexoTipoDTO sexoTipoDT);
+    SexoUsuario actualizarSexo(Integer id, SexoTipoDTO sexoTipoDT);
 
-    void eliminarRegion(Integer id);
-
+    void eliminarSexo(Integer id);
 
 }

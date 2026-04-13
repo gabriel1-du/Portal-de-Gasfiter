@@ -20,6 +20,7 @@ import static com.gateway.redireccionApis.ApiUsuarios.Comuna.ComunaPublicRoutes.
 import static com.gateway.redireccionApis.ApiUsuarios.SexoUsuario.SexoUsuarioPublicRoutes.SEXO_USUARIO_PUBLIC_GET;
 import static com.gateway.redireccionApis.ApiUsuarios.Oficio.OficioPublicRoutes.OFICIO_PUBLIC_GET;
 import static com.gateway.redireccionApis.ApiUsuarios.Usuario.UsuarioPublicRoutes.USUARIO_PUBLIC_GET;
+import static com.gateway.redireccionApis.ApiUsuarios.TiposUsuarios.TiposUsuarioPublicRoutes.TIPOS_USUARIO_PUBLIC_GET;
 
 import java.util.Arrays;
 
@@ -57,6 +58,9 @@ public class SecurityConfig {
 
                 // URL públicas API Oficio
                 .requestMatchers(HttpMethod.GET, OFICIO_PUBLIC_GET).permitAll()
+
+                // URL públicas API TiposUsuario
+                .requestMatchers(HttpMethod.GET, TIPOS_USUARIO_PUBLIC_GET).permitAll()
 
                 // Otras URL Token obligatorio
                 .anyRequest().authenticated()

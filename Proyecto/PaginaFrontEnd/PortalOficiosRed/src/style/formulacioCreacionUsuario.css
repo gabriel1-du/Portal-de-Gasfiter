@@ -24,7 +24,9 @@
 .form-group input[type="number"],
 .form-group input[type="email"],
 .form-group input[type="password"],
-.form-group input[type="tel"] {
+.form-group input[type="tel"] ,
+.form-group input[type="tel"],
+.form-group select {
     width: 100%;
     padding: 8px;
     border: 1px solid #ddd;
@@ -41,4 +43,11 @@
     cursor: pointer;
     margin-top: 20px;
     font-size: 16px;
+}
+
+.error-message {
+    color: red;
+    font-size: 0.9em;
+    text-align: left;
+    margin-top: 4px;
 }
