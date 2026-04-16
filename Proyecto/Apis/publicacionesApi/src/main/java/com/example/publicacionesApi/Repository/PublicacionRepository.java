@@ -2,7 +2,11 @@ package com.example.publicacionesApi.Repository;
 
 import com.example.publicacionesApi.Model.Publicacion;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -12,4 +16,10 @@ public interface PublicacionRepository extends JpaRepository<Publicacion, Intege
     List<Publicacion> findByRegion_IdRegion(Integer idRegion);
     List<Publicacion> findByComuna_IdComuna(Integer idComuna);
     List<Publicacion> findByTituloPublicacionContainingIgnoreCase(String tituloPublicacion);
+
+    @Query("SELECT p FROM Publicacion p WHERE " +
+           "(:idRegion IS NULL OR p.region.idRegion = :idRegion) AND " +
+           "(:idComuna IS NULL OR p.comuna.idComuna = :idComuna) AND " +
+           "(:fechaPublicacion IS NULL OR p.fechaPublicacion >= :fechaPublicacion)")
+    List<Publicacion> findByFiltros(@Param("idRegion") Integer idRegion, @Param("idComuna") Integer idComuna, @Param("fechaPublicacion") LocalDateTime fechaPublicacion);
 }

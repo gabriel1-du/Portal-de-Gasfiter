@@ -13,6 +13,8 @@ import com.example.publicacionesApi.Repository.RegionRepository;
 import com.example.publicacionesApi.Service.PublicacionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -128,6 +130,14 @@ public class PublicacionServiceImpl implements PublicacionService {
     @Override
     public List<leerPublicacionesDTO> listarPornombrePublicacion(String nombrePublicacion) {
         return publicacionRepository.findByTituloPublicacionContainingIgnoreCase(nombrePublicacion).stream()
+                .map(leerPublicacionesMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<leerPublicacionesDTO> buscarPublicaciones(Integer idRegion, Integer idComuna, LocalDateTime fechaPublicacion) {
+        List<Publicacion> publicaciones = publicacionRepository.findByFiltros(idRegion, idComuna, fechaPublicacion);
+        return publicaciones.stream()
                 .map(leerPublicacionesMapper::toDTO)
                 .collect(Collectors.toList());
     }

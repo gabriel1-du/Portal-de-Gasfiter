@@ -33,6 +33,7 @@ public class LeerPublicacionesMapper {
         dto.setUbicacionPublicacion(publicacion.getUbicacionPublicacion());
         dto.setDescripcionPublicacion(publicacion.getDescripcionPublicacion());
         dto.setCantidadLikes(publicacion.getCantidadLikes());
+        dto.setFechaPublicacion(publicacion.getFechaPublicacion());
         
         return dto;
     }

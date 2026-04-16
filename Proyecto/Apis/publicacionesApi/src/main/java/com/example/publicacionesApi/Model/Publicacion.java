@@ -2,6 +2,8 @@ package com.example.publicacionesApi.Model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "PUBLICACION")
 public class Publicacion {
@@ -34,6 +36,9 @@ public class Publicacion {
     @Column(name = "cantidad_likes")
     private Integer cantidadLikes = 0;
 
+    @Column(name = "fecha_publicacion", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime fechaPublicacion;
+
     public Integer getIdPublicacion() { return idPublicacion; }
     public void setIdPublicacion(Integer idPublicacion) { this.idPublicacion = idPublicacion; }
 
@@ -57,4 +62,7 @@ public class Publicacion {
 
     public Integer getCantidadLikes() { return cantidadLikes; }
     public void setCantidadLikes(Integer cantidadLikes) { this.cantidadLikes = cantidadLikes; }
+
+    public LocalDateTime getFechaPublicacion() { return fechaPublicacion; }
+    public void setFechaPublicacion(LocalDateTime fechaPublicacion) { this.fechaPublicacion = fechaPublicacion; }
 }

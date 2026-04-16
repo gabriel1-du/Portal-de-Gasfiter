@@ -1,6 +1,8 @@
 package com.example.publicacionesApi.DTO.ClasesPublicacionesDTO;
 
 import lombok.AllArgsConstructor;
+
+import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -24,6 +26,7 @@ public class leerPublicacionesDTO {
     private String ubicacionPublicacion;
     private String descripcionPublicacion;
     private Integer cantidadLikes;
+    private LocalDateTime fechaPublicacion;
 
 
 }

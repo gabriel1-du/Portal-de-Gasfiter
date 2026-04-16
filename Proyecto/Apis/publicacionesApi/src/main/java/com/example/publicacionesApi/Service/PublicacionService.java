@@ -2,7 +2,8 @@ package com.example.publicacionesApi.Service;
 
 import com.example.publicacionesApi.DTO.ClasesPublicacionesDTO.CrearPublicacionDTO;
 import com.example.publicacionesApi.DTO.ClasesPublicacionesDTO.leerPublicacionesDTO;
-import com.example.publicacionesApi.Model.Publicacion;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface PublicacionService {
@@ -17,4 +18,5 @@ public interface PublicacionService {
     List<leerPublicacionesDTO> listarPorComuna(Integer idComuna);
     leerPublicacionesDTO darLike(Integer id);
     List<leerPublicacionesDTO> listarPornombrePublicacion(String nombrePublicacion);
+    List<leerPublicacionesDTO> buscarPublicaciones(Integer idRegion, Integer idComuna, LocalDateTime fechaPublicacion);
 }
