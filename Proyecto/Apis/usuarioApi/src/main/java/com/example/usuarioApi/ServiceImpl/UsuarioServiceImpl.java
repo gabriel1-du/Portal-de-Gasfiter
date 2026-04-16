@@ -250,5 +250,13 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<leerUsuarioDTO> buscarConFiltros(Integer idRegion, Integer idComuna, Timestamp fecha) {
+        List<Usuario> usuarios = usuarioRepository.findByFiltros(idRegion, idComuna, fecha);
+        return usuarios.stream()
+                .map(readMapper::mapUsuarioToLeerUsuarioDTO)
+                .collect(Collectors.toList());
+    }
+
    
 }

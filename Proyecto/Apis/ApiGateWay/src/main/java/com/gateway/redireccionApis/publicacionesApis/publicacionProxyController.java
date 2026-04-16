@@ -53,16 +53,20 @@ public class publicacionProxyController {
 
     private ResponseEntity<?> handleProxy(HttpServletRequest request, String body, HttpHeaders headers) {
         String originalPath = request.getRequestURI().replace("/api/proxy/publicacionesApi", "");
+        String queryString = request.getQueryString();
 
-        URI targetUri = org.springframework.web.util.UriComponentsBuilder
-        .fromHttpUrl(publicacionBaseUrl)
-        .path(publicacionBasePath)
-        .path(originalPath)
-        .build(true) // El "true" le dice al builder: "Esta ruta ya está codificada, no la toques"
-        .toUri();
+        var uriBuilder = org.springframework.web.util.UriComponentsBuilder
+                .fromHttpUrl(publicacionBaseUrl)
+                .path(publicacionBasePath)
+                .path(originalPath);
 
+        if (queryString != null) {
+            uriBuilder.query(queryString);
+        }
+
+        URI targetUri = uriBuilder.build(true).toUri();
         HttpMethod method = HttpMethod.valueOf(request.getMethod());
-        System.out.println("PUBLICACION targetUrl: " + targetUri.toString() + "  METHOD: " + method);
+        System.out.println("PUBLICACION targetUrl: " + targetUri + "  METHOD: " + method);
 
         if (method == HttpMethod.POST || method == HttpMethod.DELETE || method == HttpMethod.PUT) {
             String authHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);

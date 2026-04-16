@@ -45,5 +45,7 @@ public interface UsuarioService {
     List<leerUsuarioDTO> buscarPorFechaCreacionDespuesDe(Timestamp fecha);
     List<leerUsuarioDTO> buscarPorFechaCreacionAntesDe(Timestamp fecha);
 
+    //Metodo para busqueda con filtros
+    List<leerUsuarioDTO> buscarConFiltros(Integer idRegion, Integer idComuna, Timestamp fecha);
 
 }

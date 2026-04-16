@@ -50,14 +50,18 @@ public class OficioProxyController {
 
     private ResponseEntity<?> handleProxy(HttpServletRequest request, String body, HttpHeaders headers) {
         String originalPath = request.getRequestURI().replace("/api/proxy/oficiosApi", "");
+        String queryString = request.getQueryString();
 
-        String targetUrl = org.springframework.web.util.UriComponentsBuilder
+        var uriBuilder = org.springframework.web.util.UriComponentsBuilder
                 .fromHttpUrl(oficioBaseUrl)
                 .path(oficioBasePath)
-                .path(originalPath)
-                .build(true)
-                .toUriString();
+                .path(originalPath);
 
+        if (queryString != null) {
+            uriBuilder.query(queryString);
+        }
+
+        String targetUrl = uriBuilder.build(true).toUriString();
         HttpMethod method = HttpMethod.valueOf(request.getMethod());
         System.out.println("OFICIO targetUrl: " + targetUrl + "  METHOD: " + method);
 

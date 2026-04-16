@@ -83,6 +83,21 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioActualizado);
     }
    
+    // --- Endpoint de Búsqueda con Filtros ---
+    // Permite filtrar por cualquier combinación de región, comuna y fecha de creación (desde la fecha indicada).
+    // Ejemplos de petición:
+    // GET http://localhost:8080/api/usuariosApi/buscar/filtrado?idRegion=13
+    // GET http://localhost:8080/api/usuariosApi/buscar/filtrado?idRegion=13&idComuna=101
+    // GET http://localhost:8080/api/usuariosApi/buscar/filtrado?fecha=2024-01-20 10:30:00
+    @GetMapping("/buscar/filtrado")
+    public ResponseEntity<List<leerUsuarioDTO>> buscarConFiltros(
+            @RequestParam(required = false) Integer idRegion,
+            @RequestParam(required = false) Integer idComuna,
+            @RequestParam(required = false) Timestamp fecha) {
+        List<leerUsuarioDTO> usuarios = usuarioService.buscarConFiltros(idRegion, idComuna, fecha);
+        return ResponseEntity.ok(usuarios);
+    }
+
     // --- Endpoints de Búsqueda ---
 
     @GetMapping("/buscar/por-comuna/{idComuna}")

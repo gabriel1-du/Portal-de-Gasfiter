@@ -1,12 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../style/home.css';
 import { getPublicacionesByNombre } from '../servicios/publicacionesService';
-import PublicacionCard from '../assets/PublicacionesCard'; // 1. Importamos el nuevo componente
+import PublicacionCard from '../assets/PublicacionesCard.jsx'; // 1. Importamos el nuevo componente
+import { getAllRegions } from '../servicios/regionService';
+import { buscarUsuariosConFiltros } from '../servicios/busquedaUsuarios.js';
+import { getAllComunas } from '../servicios/comunasService';
 
 function PaginaHome() {
   // Estado para controlar si el recuadro de filtros está abierto o cerrado
   const [filtrosAbiertos, setFiltrosAbiertos] = useState(false);
   const [textoBusqueda, setTextoBusqueda] = useState('');
+
+  // --- ESTADOS PARA DATOS DE FILTROS ---
+  const [regiones, setRegiones] = useState([]);
+  const [comunas, setComunas] = useState([]);
+  const [comunasFiltradas, setComunasFiltradas] = useState([]);
+
+  // --- ESTADOS PARA LA SELECCIÓN DEL USUARIO ---
+  const [regionSeleccionada, setRegionSeleccionada] = useState('');
+  const [comunaSeleccionada, setComunaSeleccionada] = useState('');
+  const [tipoContenido, setTipoContenido] = useState('');
+  const [fechaDesde, setFechaDesde] = useState('');
+
+  // --- MANEJADOR PARA EL CAMBIO DE REGIÓN ---
+  const handleRegionChange = (e) => {
+    setRegionSeleccionada(e.target.value);
+    setComunaSeleccionada(''); // Resetea la comuna cuando cambia la región
+  };
+
+  const handleComunaChange = (e) => {
+    setComunaSeleccionada(e.target.value);
+  };
 
   // Función que se ejecuta al presionar "Buscar"
   const manejarBusqueda = async (e) => {
@@ -20,6 +44,65 @@ function PaginaHome() {
       console.error("Error al buscar las publicaciones por nombre:", error);
     }
   };
+
+  // Función que se ejecuta al presionar "Aplicar Filtros"
+  const handleAplicarFiltros = async () => {
+    console.log("Aplicando filtros...");
+
+    // Si el tipo de contenido no es 'usuario', no hacemos nada, como solicitaste.
+    if (tipoContenido !== 'usuario') {
+      console.log("Filtro no aplicado: El tipo de contenido seleccionado no es 'Usuario / Cliente'.");
+      return;
+    }
+
+    // Construimos el objeto de filtros solo con los valores que existen.
+    const filtros = {};
+    if (regionSeleccionada) filtros.idRegion = regionSeleccionada;
+    if (comunaSeleccionada) filtros.idComuna = comunaSeleccionada;
+    if (fechaDesde) filtros.fecha = fechaDesde;
+
+    console.log("Filtros a enviar a la API:", filtros);
+
+    try {
+      // Llamamos a la función del servicio con los filtros.
+      const resultados = await buscarUsuariosConFiltros(filtros);
+      console.log("--- RESULTADO DE LA BÚSQUEDA FILTRADA DE USUARIOS ---");
+      console.log(resultados);
+      console.log("----------------------------------------------------");
+    } catch (error) {
+      console.error("Error al aplicar filtros de usuarios:", error);
+    }
+  };
+
+  // --- EFECTO PARA CARGAR DATOS DE FILTROS AL MONTAR ---
+  useEffect(() => {
+    const cargarDatosFiltros = async () => {
+      try {
+        // Peticiones en paralelo para eficiencia
+        const [regionesData, comunasData] = await Promise.all([
+          getAllRegions(),
+          getAllComunas()
+        ]);
+        if (Array.isArray(regionesData)) setRegiones(regionesData);
+        if (Array.isArray(comunasData)) setComunas(comunasData);
+      } catch (error) {
+        console.error("Error al cargar datos para filtros:", error);
+      }
+    };
+    cargarDatosFiltros();
+  }, []); // El array vacío asegura que se ejecute solo una vez
+
+  // --- EFECTO PARA FILTRAR COMUNAS CUANDO CAMBIA LA REGIÓN ---
+  useEffect(() => {
+    if (regionSeleccionada) {
+      const filtradas = comunas.filter(
+        (comuna) => comuna.idRegion === parseInt(regionSeleccionada)
+      );
+      setComunasFiltradas(filtradas);
+    } else {
+      setComunasFiltradas([]); // Limpia las comunas si no hay región
+    }
+  }, [regionSeleccionada, comunas]); // Se ejecuta si cambia la región o las comunas
 
   // 2. Datos de ejemplo para la publicación
   const publicacionEjemplo = {
@@ -57,25 +140,40 @@ function PaginaHome() {
               <form>
                 <div className="grupo-input">
                   <label>Región</label>
-                  <select className="input-estilo">
+                  <select className="input-estilo" value={regionSeleccionada} onChange={handleRegionChange}>
                     <option value="">Selecciona una región</option>
-                    <option value="1">Metropolitana</option>
-                    <option value="2">Valparaíso</option>
+                    {regiones.map((region) => (
+                      <option key={region.idRegion} value={region.idRegion}>
+                        {region.nombreRegion}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 
                 <div className="grupo-input">
                   <label>Comuna</label>
-                  <select className="input-estilo">
+                  <select 
+                    className="input-estilo" 
+                    value={comunaSeleccionada} 
+                    onChange={handleComunaChange}
+                    disabled={!regionSeleccionada}
+                  >
                     <option value="">Selecciona una comuna</option>
-                    <option value="1">Santiago</option>
-                    <option value="2">Providencia</option>
+                    {comunasFiltradas.map((comuna) => (
+                      <option key={comuna.idComuna} value={comuna.idComuna}>
+                        {comuna.nombreComuna}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
                 <div className="grupo-input">
                   <label>Tipo de Contenido</label>
-                  <select className="input-estilo">
+                  <select 
+                    className="input-estilo" 
+                    value={tipoContenido} 
+                    onChange={(e) => setTipoContenido(e.target.value)}
+                  >
                     <option value="">Selecciona el tipo</option>
                     <option value="oficio">Oficio / Servicio</option>
                     <option value="usuario">Usuario / Cliente</option>
@@ -84,10 +182,15 @@ function PaginaHome() {
 
                 <div className="grupo-input">
                   <label>Desde (Fecha)</label>
-                  <input type="date" className="input-estilo" />
+                  <input 
+                    type="date" 
+                    className="input-estilo" 
+                    value={fechaDesde} 
+                    onChange={(e) => setFechaDesde(e.target.value)} 
+                  />
                 </div>
                 
-                <button type="button" className="btn-aplicar-filtros">Aplicar Filtros</button>
+                <button type="button" className="btn-aplicar-filtros" onClick={handleAplicarFiltros}>Aplicar Filtros</button>
               </form>
             </div>
           )}

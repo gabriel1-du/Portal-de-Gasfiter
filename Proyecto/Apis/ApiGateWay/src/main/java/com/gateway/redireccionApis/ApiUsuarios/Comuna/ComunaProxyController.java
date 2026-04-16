@@ -37,9 +37,8 @@ public class ComunaProxyController {
 
     @RequestMapping(value = {"", "/**"}, method = {RequestMethod.GET})
     public ResponseEntity<?> proxyComunasPublic(HttpServletRequest request,
-                                                 @RequestBody(required = false) String body,
                                                  @RequestHeader HttpHeaders headers) {
-        return handleProxy(request, body, headers);
+        return handleProxy(request, null, headers);
     }
 
     @RequestMapping(value = {"", "/**"}, method = {RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
@@ -51,14 +50,18 @@ public class ComunaProxyController {
 
     private ResponseEntity<?> handleProxy(HttpServletRequest request, String body, HttpHeaders headers) {
         String originalPath = request.getRequestURI().replace("/api/proxy/comunasApi", "");
+        String queryString = request.getQueryString();
 
-        String targetUrl = org.springframework.web.util.UriComponentsBuilder
+        var uriBuilder = org.springframework.web.util.UriComponentsBuilder
                 .fromHttpUrl(comunasBaseUrl)
                 .path(comunasBasePath)
-                .path(originalPath)
-                .build(true)
-                .toUriString();
+                .path(originalPath);
 
+        if (queryString != null) {
+            uriBuilder.query(queryString);
+        }
+
+        String targetUrl = uriBuilder.build(true).toUriString();
         HttpMethod method = HttpMethod.valueOf(request.getMethod());
         System.out.println("COMUNAS targetUrl: " + targetUrl + "  METHOD: " + method);
 
