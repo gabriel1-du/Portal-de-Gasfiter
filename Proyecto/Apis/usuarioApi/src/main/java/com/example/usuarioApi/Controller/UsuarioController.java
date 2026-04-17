@@ -93,8 +93,19 @@ public class UsuarioController {
     public ResponseEntity<List<leerUsuarioDTO>> buscarConFiltros(
             @RequestParam(required = false) Integer idRegion,
             @RequestParam(required = false) Integer idComuna,
-            @RequestParam(required = false) Timestamp fecha) {
-        List<leerUsuarioDTO> usuarios = usuarioService.buscarConFiltros(idRegion, idComuna, fecha);
+            // 1. Recibes exactamente lo que manda React: "2026-03-13"
+            @RequestParam(required = false) String fecha) {
+
+        Timestamp fechaParaServicio = null;
+
+        if (fecha != null && !fecha.isEmpty()) {
+            // 2. Le concatenas la hora por defecto y lo transformas
+            String fechaConHora = fecha + " 00:00:00";
+            fechaParaServicio = Timestamp.valueOf(fechaConHora);
+        }
+
+        List<leerUsuarioDTO> usuarios = usuarioService.buscarConFiltros(idRegion, idComuna, fechaParaServicio);
+        
         return ResponseEntity.ok(usuarios);
     }
 
