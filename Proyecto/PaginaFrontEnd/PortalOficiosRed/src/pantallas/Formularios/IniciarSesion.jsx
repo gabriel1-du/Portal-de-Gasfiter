@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { login } from '../../servicios/authService'; // Importa la función de login
-import { AuthContext } from '../../context/authContext'; // Importa el contexto de autenticación
+import { AuthContext } from '../../context/AuthContext'; // Importa el contexto de autenticación
 import { useNavigate } from 'react-router-dom';
 import '../../style/inicioSesion.css'; // Importa el archivo CSS
 

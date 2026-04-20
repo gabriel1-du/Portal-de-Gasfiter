@@ -94,7 +94,5 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # SOLUCIÓN ERRORES CHECKSTYLE: Apagamos el linter estricto de Java
-          VALIDATE_JAVA: false
           VALIDATE_JAVASCRIPT_REACT: true
           VALIDATE_CSS: true
