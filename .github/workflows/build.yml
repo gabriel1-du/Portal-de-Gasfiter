@@ -1,0 +1,98 @@
+name: CI/CD Portal Ofires - Full Stack Scan
+
+on:
+  push:
+    branches: [ "main", "develop", "desarrollo-apis" ]
+  pull_request:
+    branches: [ "main" ]
+
+
+permissions:
+  contents: read
+  statuses: write 
+
+jobs:
+  # --- JOB PARA LAS APIS JAVA (Maven) ---
+  backend-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      # Análisis API Usuario
+      - name: Build Usuario API
+        run: mvn -B package -DskipTests
+        working-directory: Proyecto/Apis/usuarioApi
+
+      - name: Security Scan (Usuario API)
+        run: mvn org.owasp:dependency-check-maven:check
+        working-directory: Proyecto/Apis/usuarioApi
+        continue-on-error: true
+
+      # Análisis API Publicaciones
+      - name: Build Publicaciones API
+        run: mvn -B package -DskipTests
+        working-directory: Proyecto/Apis/publicacionesApi
+
+      - name: Security Scan (Publicaciones API)
+        run: mvn org.owasp:dependency-check-maven:check
+        working-directory: Proyecto/Apis/publicacionesApi
+        continue-on-error: true
+
+      # Análisis API Gateway (Opcional, si también quieres escanearla)
+      - name: Build ApiGateWay
+        run: mvn -B package -DskipTests
+        working-directory: Proyecto/Apis/ApiGateWay
+        continue-on-error: true
+
+  # --- JOB PARA EL FRONTEND (React + Vite) ---
+  frontend-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          # Ruta corregida hacia el lockfile del frontend
+          cache-dependency-path: Proyecto/PaginaFrontEnd/PortalOficiosRed/package-lock.json
+
+      - name: Instalar dependencias y Build
+        run: |
+          npm install
+          npm run build
+        # Ruta corregida hacia la raíz del frontend
+        working-directory: Proyecto/PaginaFrontEnd/PortalOficiosRed
+
+  # --- JOB DE SEGURIDAD Y CALIDAD (Secretos y Lint) ---
+  security-and-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 
+
+      - name: Secret Scanning (TruffleHog)
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --debug --only-verified
+
+      - name: Super-Linter
+        uses: github/super-linter@v5
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_JAVASCRIPT_REACT: true
+          VALIDATE_CSS: true

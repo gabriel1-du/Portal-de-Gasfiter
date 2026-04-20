@@ -1,0 +1,210 @@
+CREATE DATABASE IF NOT EXISTS gasfiteria_db;
+USE gasfiteria_db;
+
+CREATE TABLE REGION (
+    id_region INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_region VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE OFICIO (
+    id_oficio INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_oficio VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE TIPO_USUARIO (
+    id_tipo_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_rol VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE TIPO_SERVICIO(
+    id_tipo_servicio INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_servicio VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE SEXO_USUARIO (
+    id_sexo INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_sexo VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE TIPO_DENUNCIA (
+    id_tipo_denuncia INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_tipo_denuncia VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE TIPO_CONTENIDO_DENUNCIADO (
+    id_tipo_contenido INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_contenido VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE COMUNA (
+    id_comuna INT AUTO_INCREMENT PRIMARY KEY,
+    id_region INT NOT NULL,
+    nombre_comuna VARCHAR(100) NOT NULL,
+    CONSTRAINT fk_comuna_region FOREIGN KEY (id_region) REFERENCES REGION(id_region)
+);
+
+CREATE TABLE USUARIO (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    p_nombre VARCHAR(50) NOT NULL,
+    s_nombre VARCHAR(50),
+    p_apellido VARCHAR(50) NOT NULL,
+    s_apellido VARCHAR(50),
+    id_sexo_usu INT NOT NULL,
+    correo_elec VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    id_tipo_usu INT NOT NULL,
+    rut VARCHAR(12) NULL UNIQUE,
+    rut_dv VARCHAR(1) NULL,
+    numero_telef VARCHAR(20),
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    foto VARCHAR(255),
+    valoracion DECIMAL(3,2) DEFAULT 0.00,
+    id_region_usu INT,
+    id_comuna_usu INT,
+    habilitador_administrador BOOLEAN DEFAULT FALSE,
+    id_oficio INT,
+    CONSTRAINT fk_usu_sexo FOREIGN KEY (id_sexo_usu) REFERENCES SEXO_USUARIO(id_sexo),
+    CONSTRAINT fk_usu_tipo FOREIGN KEY (id_tipo_usu) REFERENCES TIPO_USUARIO(id_tipo_usuario),
+    CONSTRAINT fk_usu_region FOREIGN KEY (id_region_usu) REFERENCES REGION(id_region),
+    CONSTRAINT fk_usu_comuna FOREIGN KEY (id_comuna_usu) REFERENCES COMUNA(id_comuna),
+    CONSTRAINT fk_usu_oficio FOREIGN KEY (id_oficio) REFERENCES OFICIO(id_oficio)
+);
+
+-- Migración de estructura para la valoración del usuario
+UPDATE USUARIO 
+SET valoracion = 0.00 
+WHERE valoracion IS NULL;
+
+ALTER TABLE USUARIO 
+MODIFY valoracion DECIMAL(3,2) NOT NULL DEFAULT 0.00;
+
+CREATE TABLE PERFIL_USUARIO (
+    id_perfil_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL UNIQUE, -- Vínculo 1 a 1 estricto
+    nombre_apodo VARCHAR(100),
+    p_nombre VARCHAR(50),
+    s_nombre VARCHAR(50),
+    p_apellido VARCHAR(50),
+    s_apellido VARCHAR(50),
+    numero_telefono VARCHAR(20),
+    foto_perfil VARCHAR(255) NULL,
+    fotografia_banner VARCHAR(255) NULL,
+    id_region INT,
+    id_comuna INT,
+    id_oficio INT,
+    calificacion_p_usuario DECIMAL(3,2) DEFAULT 0.00,
+    sexo_usu_per INT,
+    CONSTRAINT fk_perfil_usuario FOREIGN KEY (id_usuario) REFERENCES USUARIO(id_usuario) ON DELETE CASCADE,
+    CONSTRAINT fk_perfil_region FOREIGN KEY (id_region) REFERENCES REGION(id_region),
+    CONSTRAINT fk_perfil_comuna FOREIGN KEY (id_comuna) REFERENCES COMUNA(id_comuna),
+    CONSTRAINT fk_perfil_oficio FOREIGN KEY (id_oficio) REFERENCES OFICIO(id_oficio),
+    CONSTRAINT fk_perfil_sexo FOREIGN KEY (sexo_usu_per) REFERENCES SEXO_USUARIO(id_sexo)
+);
+
+-- =========================================================================
+-- FASE 4: MARKETPLACE (PUBLICACIONES Y RESEÑAS)
+-- =========================================================================
+
+CREATE TABLE PUBLICACION (
+    id_publicacion INT AUTO_INCREMENT PRIMARY KEY,
+    id_autor INT NOT NULL,
+    titulo_publicacion VARCHAR(150) NOT NULL,
+    id_region INT NOT NULL,
+    id_comuna INT NOT NULL,
+    ubicacion_publicacion VARCHAR(255) DEFAULT 'indefinido',
+    descripcion_publicacion TEXT NOT NULL,
+    cantidad_likes INT DEFAULT 0,
+    CONSTRAINT fk_publi_autor FOREIGN KEY (id_autor) REFERENCES USUARIO(id_usuario) ON DELETE CASCADE,
+    CONSTRAINT fk_publi_region FOREIGN KEY (id_region) REFERENCES REGION(id_region),
+    CONSTRAINT fk_publi_comuna FOREIGN KEY (id_comuna) REFERENCES COMUNA(id_comuna)
+);
+
+CREATE TABLE FOTOS_PUBLI (
+    id_foto_publi INT AUTO_INCREMENT PRIMARY KEY,
+    id_publicacion INT NOT NULL,
+    url_foto VARCHAR(255) NOT NULL,
+    CONSTRAINT fk_foto_publi FOREIGN KEY (id_publicacion) REFERENCES PUBLICACION(id_publicacion) ON DELETE CASCADE
+);
+
+CREATE TABLE RESENIA (
+    id_resenia INT AUTO_INCREMENT PRIMARY KEY,
+    id_autor INT NOT NULL,
+    id_usuario_reseniado INT NOT NULL,
+    calificacion DECIMAL(3,2) NOT NULL,
+    texto_resenia TEXT NOT NULL,
+    CONSTRAINT fk_resenia_autor FOREIGN KEY (id_autor) REFERENCES USUARIO(id_usuario),
+    CONSTRAINT fk_resenia_destinatario FOREIGN KEY (id_usuario_reseniado) REFERENCES USUARIO(id_usuario) ON DELETE CASCADE
+);
+
+CREATE TABLE RESPUESTA_RESENIA (
+    id_respuesta_resenia INT AUTO_INCREMENT PRIMARY KEY,
+    id_resenia INT NOT NULL UNIQUE, -- Unique porque suele ser 1 respuesta por reseña
+    id_autor_res INT NOT NULL,
+    texto_respuesta_resenia TEXT NOT NULL,
+    CONSTRAINT fk_resp_resenia FOREIGN KEY (id_resenia) REFERENCES RESENIA(id_resenia) ON DELETE CASCADE,
+    CONSTRAINT fk_resp_autor FOREIGN KEY (id_autor_res) REFERENCES USUARIO(id_usuario)
+);
+
+CREATE TABLE CHAT_INBOX (
+    id_chat INT AUTO_INCREMENT PRIMARY KEY,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE PARTICIPANTES_CHAT (
+    id_participantes_chat INT AUTO_INCREMENT PRIMARY KEY,
+    id_chat_inbox INT NOT NULL,
+    id_usuario_paticipante INT NOT NULL,
+    CONSTRAINT fk_participante_chat FOREIGN KEY (id_chat_inbox) REFERENCES CHAT_INBOX(id_chat) ON DELETE CASCADE,
+    CONSTRAINT fk_participante_usuario FOREIGN KEY (id_usuario_paticipante) REFERENCES USUARIO(id_usuario) ON DELETE CASCADE
+);
+
+CREATE TABLE MENSAJES_CHAT (
+    id_mensaje_chat INT AUTO_INCREMENT PRIMARY KEY,
+    id_chat INT NOT NULL,
+    id_autor_mensaje INT NOT NULL,
+    mensaje_texto TEXT NOT NULL,
+    fecha_hora_envio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_mensaje_chat FOREIGN KEY (id_chat) REFERENCES CHAT_INBOX(id_chat) ON DELETE CASCADE,
+    CONSTRAINT fk_mensaje_autor FOREIGN KEY (id_autor_mensaje) REFERENCES USUARIO(id_usuario)
+);
+
+CREATE TABLE BLOQUEO_USUARIO (
+    id_bloqueo INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario_que_bloquea INT NOT NULL,
+    id_usuario_bloqueado INT NOT NULL,
+    fecha_bloqueo TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_bloqueador FOREIGN KEY (id_usuario_que_bloquea) REFERENCES USUARIO(id_usuario) ON DELETE CASCADE,
+    CONSTRAINT fk_bloqueado FOREIGN KEY (id_usuario_bloqueado) REFERENCES USUARIO(id_usuario) ON DELETE CASCADE
+);
+
+CREATE TABLE DENUNCIAS (
+    id_denuncia INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario_denunciante INT NOT NULL,
+    id_tipo_denuncia INT NOT NULL,
+    id_tipo_contenido INT NOT NULL,
+    descripcion_denuncia TEXT NOT NULL,
+    fecha_denuncia TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    id_usuario_denunciado INT NULL,
+    id_publicacion_denunciada INT NULL,
+    id_resenia_denunciada INT NULL,      -- Corresponde a la denuncia de una "Valoración"
+    id_respuesta_denunciada INT NULL,    -- Corresponde a la denuncia de un "Comentario"
+    
+    CONSTRAINT fk_denuncia_autor FOREIGN KEY (id_usuario_denunciante) REFERENCES USUARIO(id_usuario),
+    CONSTRAINT fk_denuncia_tipo FOREIGN KEY (id_tipo_denuncia) REFERENCES TIPO_DENUNCIA(id_tipo_denuncia),
+    CONSTRAINT fk_denuncia_contenido FOREIGN KEY (id_tipo_contenido) REFERENCES TIPO_CONTENIDO_DENUNCIADO(id_tipo_contenido),
+    
+    -- Foráneas condicionales del Arco Exclusivo
+    CONSTRAINT fk_denuncia_usu_target FOREIGN KEY (id_usuario_denunciado) REFERENCES USUARIO(id_usuario) ON DELETE CASCADE,
+    CONSTRAINT fk_denuncia_publi_target FOREIGN KEY (id_publicacion_denunciada) REFERENCES PUBLICACION(id_publicacion) ON DELETE CASCADE,
+    CONSTRAINT fk_denuncia_resenia_target FOREIGN KEY (id_resenia_denunciada) REFERENCES RESENIA(id_resenia) ON DELETE CASCADE,
+    CONSTRAINT fk_denuncia_resp_target FOREIGN KEY (id_respuesta_denunciada) REFERENCES RESPUESTA_RESENIA(id_respuesta_resenia) ON DELETE CASCADE
+);
+
+-- =========================================================================
+-- ALTERACIONES POSTERIORES
+-- =========================================================================
+
+-- Alter para agregar el atributo de fecha de publicación solicitado
+ALTER TABLE PUBLICACION
+ADD COLUMN fecha_publicacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
