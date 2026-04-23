@@ -1,5 +1,25 @@
 const API_URL_USUARIOS = import.meta.env.VITE_API_URL_USUARIOS; //url de acceso a la api de usuarios
 
+
+
+// Función para obtener un usuario por su ID
+export const getUsuarioById = async (id) => {
+  try {
+    console.log("Llamando a la API de Usuarios (GET by ID):", `${API_URL_USUARIOS}/${id}`);
+    const response = await fetch(`${API_URL_USUARIOS}/${id}`);
+    if (!response.ok) {
+      console.error(`Error en la respuesta de la red (GET Usuario by ID ${id}):`, response.status, response.statusText);
+      throw new Error(`Error al obtener el usuario con ID ${id}.`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(`Error al intentar obtener el usuario con ID ${id}:`, error);
+    throw error;
+  }
+};
+
+
 // Función para leer todos los usuarios desde la API Gateway
 export const leerTodosLosUsuarios = async () => {
   try {

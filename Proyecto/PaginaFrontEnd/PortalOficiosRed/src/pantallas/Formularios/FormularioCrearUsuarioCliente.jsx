@@ -68,10 +68,19 @@ function FormularioCrearUsuarioCliente() {
 
   // Función para manejar los cambios en los inputs
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, files } = e.target;
 
-    // Si se cambia la región, se resetea la comuna
-    if (name === 'idRegionUsu') {
+    if (type === 'file') {
+      const file = files[0];
+      if (file) {
+        // Se crea una URL local para el archivo seleccionado.
+        // Esto es temporal hasta que se conecte a un servicio de almacenamiento en la nube.
+        setFormData((prevData) => ({
+          ...prevData,
+          foto: URL.createObjectURL(file),
+        }));
+      }
+    } else if (name === 'idRegionUsu') {
       setFormData((prevData) => ({
         ...prevData,
         idRegionUsu: value,
@@ -173,7 +182,7 @@ function FormularioCrearUsuarioCliente() {
         </div>
         <div className="form-group">
           <label htmlFor="foto">URL de la Foto:</label>
-          <input type="text" id="foto" name="foto" value={formData.foto} onChange={handleChange} placeholder="https://ejemplo.com/tu-foto.jpg" />
+          <input type="file" id="foto" name="foto" onChange={handleChange} accept="image/*" />
         </div>
         <div className="form-group">
           <label htmlFor="correoElec">Correo Electrónico:</label>
@@ -189,8 +198,8 @@ function FormularioCrearUsuarioCliente() {
           <input type="tel" id="numeroTelef" name="numeroTelef" value={formData.numeroTelef} onChange={handleChange} required />
         </div>
         <div className="form-group">
-          <label htmlFor="idRegionUsu">Región (Opcional):</label>
-          <select id="idRegionUsu" name="idRegionUsu" value={formData.idRegionUsu} onChange={handleChange}>
+          <label htmlFor="idRegionUsu">Región:</label>
+          <select id="idRegionUsu" name="idRegionUsu" value={formData.idRegionUsu} onChange={handleChange} required>
             <option value="">Selecciona una región</option>
             {regiones.map((region) => (
               <option key={region.idRegion} value={region.idRegion}>
@@ -200,7 +209,7 @@ function FormularioCrearUsuarioCliente() {
           </select>
         </div>
         <div className="form-group">
-          <label htmlFor="idComunaUsu">Comuna (Opcional):</label>
+          <label htmlFor="idComunaUsu">Comuna:</label>
           <select id="idComunaUsu" name="idComunaUsu" value={formData.idComunaUsu} onChange={handleChange} disabled={!formData.idRegionUsu}>
             <option value="">Selecciona una comuna</option>
             {comunasFiltradas.map((comuna) => (
