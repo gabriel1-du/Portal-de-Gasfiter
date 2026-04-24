@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../style/home.css';
 import { getPublicacionesByNombre } from '../servicios/publicacionesService';
 import { getAllRegions } from '../servicios/regionService';
@@ -7,6 +8,7 @@ import { buscarPublicacionesConFiltros } from '../servicios/busquedaPublicacione
 import { getAllComunas } from '../servicios/comunasService';
 
 function BarraBusqueda() {
+  const navigate = useNavigate();
   // Estado para controlar si el recuadro de filtros está abierto o cerrado
   const [filtrosAbiertos, setFiltrosAbiertos] = useState(false);
   const [textoBusqueda, setTextoBusqueda] = useState('');
@@ -33,53 +35,31 @@ function BarraBusqueda() {
   };
 
   // Función que se ejecuta al presionar "Buscar"
-  const manejarBusqueda = async (e) => {
+  const manejarBusqueda = (e) => {
     e.preventDefault(); // Evita que la página se recargue
     if (!textoBusqueda.trim()) return; // Evita buscar si la barra está vacía
 
-    try {
-      const resultados = await getPublicacionesByNombre(textoBusqueda);
-      console.log("Resultados de la búsqueda:", resultados);
-    } catch (error) {
-      console.error("Error al buscar las publicaciones por nombre:", error);
-    }
+    const params = new URLSearchParams();
+    params.append('q', textoBusqueda.trim());
+    // Por defecto, la búsqueda por texto buscará oficios/publicaciones
+    params.append('tipo', 'oficio');
+
+    navigate(`/resultados?${params.toString()}`);
   };
 
   // Función que se ejecuta al presionar "Aplicar Filtros"
-  const handleAplicarFiltros = async () => {
-    console.log("Aplicando filtros...");
+  const handleAplicarFiltros = () => {
+    const params = new URLSearchParams();
 
-    // Construimos el objeto de filtros solo con los valores que existen.
-    const filtros = {};
-    if (regionSeleccionada) filtros.idRegion = regionSeleccionada;
-    if (comunaSeleccionada) filtros.idComuna = comunaSeleccionada;
-    if (fechaDesde) filtros.fecha = fechaDesde;
+    // Añadimos los parámetros solo si tienen valor
+    if (tipoContenido) params.append('tipo', tipoContenido);//Se añade el tipo de contenido seleccionado al url
+    if (regionSeleccionada) params.append('idRegion', regionSeleccionada); //Se añade la región seleccionada al url
+    if (comunaSeleccionada) params.append('idComuna', comunaSeleccionada); //Se añade la comuna seleccionada al url
+    if (fechaDesde) params.append('fecha', fechaDesde); //Se añade la fecha seleccionada al url
 
-    console.log("Filtros a enviar a la API:", filtros, "para tipo:", tipoContenido);
-
-    if (tipoContenido === 'usuario') {
-      try {
-        // Llamamos a la función del servicio con los filtros para usuarios.
-        const resultados = await buscarUsuariosConFiltros(filtros);
-        console.log("--- RESULTADO DE LA BÚSQUEDA FILTRADA DE USUARIOS ---");
-        console.log(resultados);
-        console.log("----------------------------------------------------");
-      } catch (error) {
-        console.error("Error al aplicar filtros de usuarios:", error);
-      }
-    } else if (tipoContenido === 'oficio') {
-      try {
-        // Llamamos a la función del servicio con los filtros para publicaciones.
-        const resultados = await buscarPublicacionesConFiltros(filtros);
-        console.log("--- RESULTADO DE LA BÚSQUEDA FILTRADA DE PUBLICACIONES ---");
-        console.log(resultados);
-        console.log("---------------------------------------------------------");
-      } catch (error) {
-        console.error("Error al aplicar filtros de publicaciones:", error);
-      }
-    } else {
-      console.log("Filtro no aplicado: Por favor, selecciona un tipo de contenido.");
-    }
+    // Navegamos a la página de resultados con los filtros como query params
+    navigate(`/resultados?${params.toString()}`);
+    setFiltrosAbiertos(false); // Cerramos el menú de filtros después de aplicar
   };
 
   // --- EFECTO PARA CARGAR DATOS DE FILTROS AL MONTAR ---
