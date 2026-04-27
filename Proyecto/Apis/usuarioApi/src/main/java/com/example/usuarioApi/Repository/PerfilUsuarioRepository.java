@@ -19,15 +19,15 @@ public interface PerfilUsuarioRepository extends JpaRepository<PerfilUsuario, In
     List<PerfilUsuario> findByOficio_IdOficio(Integer idOficio);
     Optional<PerfilUsuario> findByUsuario_IdUsuario(Integer idUsuario);
 
-    // Búsqueda combinada (Inspirada en tu ejemplo)
     @Query("SELECT p FROM PerfilUsuario p WHERE " +
-           "(:idRegion IS NULL OR p.region.idRegion = :idRegion) AND " +
-           "(:idComuna IS NULL OR p.comuna.idComuna = :idComuna) AND " +
-           "(:idOficio IS NULL OR p.oficio.idOficio = :idOficio)")
+       "(:idRegion IS NULL OR p.region.idRegion = :idRegion) AND " +
+       "(:idComuna IS NULL OR p.comuna.idComuna = :idComuna) AND " +
+       "(:idOficio IS NULL OR p.oficio.idOficio = :idOficio) AND " +
+       "(:fecha IS NULL OR p.fechaCreacion >= :fecha)")
     List<PerfilUsuario> findByFiltrosMultiples(
-            @Param("idRegion") Integer idRegion,
-            @Param("idComuna") Integer idComuna,
-            @Param("idOficio") Integer idOficio
+        @Param("idRegion") Integer idRegion,
+        @Param("idComuna") Integer idComuna,
+        @Param("idOficio") Integer idOficio,
+        @Param("fecha") java.sql.Timestamp fecha
     );
-
 }

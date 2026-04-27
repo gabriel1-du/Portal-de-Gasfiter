@@ -1,5 +1,6 @@
 package com.example.usuarioApi.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import com.example.usuarioApi.DTO.PerfilUsuarioDTO.PerfilUsuarioActualizarDTO;
@@ -15,7 +16,7 @@ public interface PerfilUsuarioService {
     List<PerfilUsuarioLeerDTO> buscarPorRegion(Integer idRegion);
     List<PerfilUsuarioLeerDTO> buscarPorComuna(Integer idComuna);
     List<PerfilUsuarioLeerDTO> buscarPorOficio(Integer idOficio);
-    List<PerfilUsuarioLeerDTO> buscarPorFiltros(Integer idRegion, Integer idComuna, Integer idOficio);
+    List<PerfilUsuarioLeerDTO> buscarPorFiltros(Integer idRegion, Integer idComuna, Integer idOficio, Timestamp fecha);
     PerfilUsuarioLeerDTO actualizarPerfil(Integer id, PerfilUsuarioActualizarDTO dto);
     void eliminarPerfil(Integer id);
 

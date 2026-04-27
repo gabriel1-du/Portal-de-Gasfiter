@@ -1,5 +1,6 @@
 package com.example.usuarioApi.ServiceImpl;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -78,11 +79,9 @@ public class PerfilUsuarioServiceImpl implements PerfilUsuarioService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PerfilUsuarioLeerDTO> buscarPorFiltros(Integer idRegion, Integer idComuna, Integer idOficio) {
-        // Usamos el método personalizado del repositorio que maneja filtros opcionales (NULL)
-        return perfilRepository.findByFiltrosMultiples(idRegion, idComuna, idOficio).stream()
-                .map(mapper::mapToLeerDTO)
-                .collect(Collectors.toList());
+    public List<PerfilUsuarioLeerDTO> buscarPorFiltros(Integer idRegion, Integer idComuna, Integer idOficio, Timestamp fecha) {
+        return perfilRepository.findByFiltrosMultiples(idRegion, idComuna, idOficio, fecha).stream()
+                .map(mapper::mapToLeerDTO).collect(Collectors.toList());
     }
 
     @Override
@@ -114,19 +113,19 @@ public class PerfilUsuarioServiceImpl implements PerfilUsuarioService {
     @Override
     @Transactional(readOnly = true)
     public List<PerfilUsuarioLeerDTO> buscarPorRegion(Integer idRegion) {
-        return buscarPorFiltros(idRegion, null, null);
+        return buscarPorFiltros(idRegion, null, null, null);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<PerfilUsuarioLeerDTO> buscarPorComuna(Integer idComuna) {
-        return buscarPorFiltros(null, idComuna, null);
+        return buscarPorFiltros(null, idComuna, null, null);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<PerfilUsuarioLeerDTO> buscarPorOficio(Integer idOficio) {
-        return buscarPorFiltros(null, null, idOficio);
+        return buscarPorFiltros(null, null, idOficio , null);
     }
 
 }

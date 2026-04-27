@@ -75,8 +75,11 @@ public class PerfilUsuarioController {
     public ResponseEntity<List<PerfilUsuarioLeerDTO>> buscarPorFiltros(
             @RequestParam(required = false) Integer idRegionUsu,
             @RequestParam(required = false) Integer idComunaUsu,
-            @RequestParam(required = false) Integer idOficio) {
-        return ResponseEntity.ok(perfilService.buscarPorFiltros(idRegionUsu, idComunaUsu, idOficio));
+            @RequestParam(required = false) Integer idOficio,
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") java.util.Date fecha) {
+        
+        java.sql.Timestamp timestamp = (fecha != null) ? new java.sql.Timestamp(fecha.getTime()) : null;
+        return ResponseEntity.ok(perfilService.buscarPorFiltros(idRegionUsu, idComunaUsu, idOficio, timestamp));
     }
 
     // --- ACTUALIZAR (PUT) ---
