@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.usuarioApi.DTO.PerfilUsuarioDTO.PerfilUsuarioActualizarDTO;
 import com.example.usuarioApi.DTO.PerfilUsuarioDTO.PerfilUsuarioCrearDTO;
 import com.example.usuarioApi.DTO.PerfilUsuarioDTO.PerfilUsuarioLeerDTO;
+import com.example.usuarioApi.DTO.PerfilUsuarioDTO.PerfilUsuarioLeerFrontDTO;
 import com.example.usuarioApi.DTO.PerfilUsuarioDTO.MapToPerfilUsuarioDTO.PerfilUsuarioMapper;
 import com.example.usuarioApi.Model.PerfilUsuario;
 import com.example.usuarioApi.Model.Usuario;
@@ -128,4 +129,15 @@ public class PerfilUsuarioServiceImpl implements PerfilUsuarioService {
         return buscarPorFiltros(null, null, idOficio , null);
     }
 
+
+    @Override
+    @Transactional(readOnly = true)
+    public PerfilUsuarioLeerFrontDTO obtenerPerfilFrontPorIdUsuario(Integer idUsuario) {
+        // Buscamos la entidad en la base de datos
+        PerfilUsuario perfil = perfilRepository.findByUsuario_IdUsuario(idUsuario)
+                .orElseThrow(() -> new RuntimeException("No se encontró un perfil para el usuario con ID: " + idUsuario));
+
+        // Usamos el nuevo mapeador que trae los nombres de las regiones, comunas, etc.
+        return mapper.mapToLeerFrontDTO(perfil);
+    }
 }

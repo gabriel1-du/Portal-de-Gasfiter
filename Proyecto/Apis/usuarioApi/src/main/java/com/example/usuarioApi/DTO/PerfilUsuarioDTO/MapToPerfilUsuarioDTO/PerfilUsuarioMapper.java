@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import com.example.usuarioApi.DTO.PerfilUsuarioDTO.PerfilUsuarioActualizarDTO;
 import com.example.usuarioApi.DTO.PerfilUsuarioDTO.PerfilUsuarioCrearDTO;
 import com.example.usuarioApi.DTO.PerfilUsuarioDTO.PerfilUsuarioLeerDTO;
+import com.example.usuarioApi.DTO.PerfilUsuarioDTO.PerfilUsuarioLeerFrontDTO;
 import com.example.usuarioApi.Model.PerfilUsuario;
 import com.example.usuarioApi.Model.Usuario;
 
@@ -97,4 +98,51 @@ public class PerfilUsuarioMapper {
     }
     
 
+
+    // --- MAP TO LEER FRONT DTO (OPTIMIZADO PARA REACT) ---
+    public PerfilUsuarioLeerFrontDTO mapToLeerFrontDTO(PerfilUsuario entidad) {
+        if (entidad == null) return null;
+
+        PerfilUsuarioLeerFrontDTO dto = new PerfilUsuarioLeerFrontDTO();
+        
+        dto.setIdPerfilUsuario(entidad.getIdPerfilUsuario());
+        
+        // Datos del Usuario base
+        if (entidad.getUsuario() != null) {
+            dto.setIdUsuario(entidad.getUsuario().getIdUsuario());
+            dto.setCorreoElec(entidad.getUsuario().getCorreoElec()); 
+        }
+        
+        dto.setNombreApodo(entidad.getNombreApodo());
+        dto.setPrimerNombre(entidad.getPNombre());
+        dto.setSegundoNombre(entidad.getSNombre());
+        dto.setPrimerApellido(entidad.getPApellido());
+        dto.setSegundoApellido(entidad.getSApellido());
+        dto.setNumeroTelef(entidad.getNumeroTelefono());
+        dto.setFoto(entidad.getFotoPerfil());
+        dto.setFotografiaBanner(entidad.getFotografiaBanner());
+        
+        // INTER-CONSULTAS EN EL BACKEND: 
+        // Sacamos el nombre de los modelos incrustados en lugar de sus IDs
+        dto.setNombreRegion(
+            entidad.getRegion() != null ? entidad.getRegion().getNombreRegion() : "Sin región"
+        );
+        
+        dto.setNombreComuna(
+            entidad.getComuna() != null ? entidad.getComuna().getNombreComuna() : "Sin comuna"
+        );
+        
+        dto.setNombreOficio(
+            entidad.getOficio() != null ? entidad.getOficio().getNombreOficio() : "Sin oficio"
+        );
+        
+        dto.setNombreSexo(
+            entidad.getSexoUsuario() != null ? entidad.getSexoUsuario().getNombreSexo() : "No especificado"
+        );
+        
+        dto.setCalificacion(entidad.getCalificacionPUsuario());
+        dto.setFechaCreacion(entidad.getFechaCreacion());
+        
+        return dto;
+    }
 }

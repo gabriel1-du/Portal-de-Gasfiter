@@ -30,4 +30,7 @@ public interface PerfilUsuarioRepository extends JpaRepository<PerfilUsuario, In
         @Param("idOficio") Integer idOficio,
         @Param("fecha") java.sql.Timestamp fecha
     );
+
+
+    
 }

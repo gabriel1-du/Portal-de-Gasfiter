@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.usuarioApi.DTO.PerfilUsuarioDTO.PerfilUsuarioActualizarDTO;
 import com.example.usuarioApi.DTO.PerfilUsuarioDTO.PerfilUsuarioCrearDTO;
 import com.example.usuarioApi.DTO.PerfilUsuarioDTO.PerfilUsuarioLeerDTO;
+import com.example.usuarioApi.DTO.PerfilUsuarioDTO.PerfilUsuarioLeerFrontDTO;
 import com.example.usuarioApi.Service.PerfilUsuarioService;
 
 @RestController
@@ -45,6 +46,12 @@ public class PerfilUsuarioController {
     @GetMapping("/usuario/{idUsuario}")
     public ResponseEntity<PerfilUsuarioLeerDTO> obtenerPerfilPorUsuario(@PathVariable Integer idUsuario) {
         return ResponseEntity.ok(perfilService.obtenerPorIdUsuario(idUsuario));
+    }
+
+    @GetMapping("/front/usuario/{idUsuario}")
+    public ResponseEntity<PerfilUsuarioLeerFrontDTO> obtenerPerfilFront(@PathVariable Integer idUsuario) {
+        PerfilUsuarioLeerFrontDTO perfilFront = perfilService.obtenerPerfilFrontPorIdUsuario(idUsuario);
+        return ResponseEntity.ok(perfilFront);
     }
 
     // --- LECTURA GENERAL (GET) ---
