@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { AuthContext } from '../context/AuthContext'; // 1. Importamos el contexto
 import { getPerfilFrontByUsuarioId } from '../servicios/perfilesUsuarioService'; // Asegúrate de que la ruta sea correcta
 import '../style/PerfilPantalla.css';
 
 const PerfilPantalla = () => {
-  // Variable de prueba manual que solicitaste
-  const ID_PRUEBA = 22;
+  // 2. Obtenemos el usuario que ha iniciado sesión desde el contexto
+  const { usuario } = useContext(AuthContext);
 
   const [perfil, setPerfil] = useState(null);
   const [cargando, setCargando] = useState(true);
@@ -12,29 +13,39 @@ const PerfilPantalla = () => {
 
   useEffect(() => {
     const cargarPerfil = async () => {
-      try {
-        setCargando(true);
-        const datos = await getPerfilFrontByUsuarioId(ID_PRUEBA);
-        
-        if (!datos) {
-          setError("No se encontró el perfil para este usuario.");
-        } else {
-          setPerfil(datos);
+      // 3. Solo intentamos cargar el perfil si hay un usuario en el contexto
+      if (usuario && usuario.idUsuario) {
+        try {
+          setCargando(true);
+          // 4. Usamos el ID del usuario del contexto en lugar del ID de prueba
+          const datos = await getPerfilFrontByUsuarioId(usuario.idUsuario);
+          
+          if (!datos) {
+            setError("No se encontró el perfil para este usuario.");
+          } else {
+            setPerfil(datos);
+          }
+        } catch (err) {
+          setError("Ocurrió un error al intentar cargar el perfil.");
+          console.error(err);
+        } finally {
+          setCargando(false);
         }
-      } catch (err) {
-        setError("Ocurrió un error al intentar cargar el perfil.");
-        console.error(err);
-      } finally {
+      } else {
+        // Si no hay usuario, no hay nada que cargar.
         setCargando(false);
       }
     };
 
     cargarPerfil();
-  }, []);
+  }, [usuario]); // 5. El efecto se vuelve a ejecutar si el 'usuario' cambia (login/logout)
 
+  //  Manejo de los distintos estados de la carga y la sesión
   if (cargando) return <div className="estado-mensaje">Cargando perfil...</div>;
+  if (!usuario) return <div className="estado-mensaje">Debes iniciar sesión para ver tu perfil.</div>;
   if (error) return <div className="estado-mensaje error">{error}</div>;
-  if (!perfil) return null;
+  if (!perfil) return <div className="estado-mensaje">No se pudo cargar la información del perfil.</div>;
+
 
   // Destructuramos TODOS los atributos del JSON como pediste
   const {

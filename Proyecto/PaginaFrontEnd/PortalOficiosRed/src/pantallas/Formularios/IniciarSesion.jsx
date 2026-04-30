@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { login } from '../../servicios/authService'; // Importa la función de login
 import { AuthContext } from '../../context/AuthContext'; // Importa el contexto de autenticación
+import { jwtDecode } from 'jwt-decode'; // 1. Importamos la librería para decodificar el token
 import { useNavigate } from 'react-router-dom';
 import '../../style/inicioSesion.css'; // Importa el archivo CSS
 
@@ -20,15 +21,27 @@ function IniciarSesion() {
     try {
       const credenciales = { email, password };
       const data = await login(credenciales); // Llama a la función de login del servicio
-      
+
+      // Ahora, la respuesta solo contiene el token.
       if (data && data.token) {
-        iniciarSesion(data.token, data.usuario); // Guarda el token y los datos del usuario en el contexto y localStorage
+        // 2. Decodificamos el token para obtener el payload (los datos del usuario)
+        const decodedToken = jwtDecode(data.token);
+
+        // 3. Creamos un objeto 'usuario' con los datos del token
+        const usuarioParaContexto = {
+          idUsuario: decodedToken.userId,
+          username: decodedToken.username,
+          rol: decodedToken.rol,
+        };
+
+        // 4. Llamamos a iniciarSesion con el token y el objeto de usuario que acabamos de crear.
+        iniciarSesion(data.token, usuarioParaContexto);
         setMensaje('Inicio de sesión exitoso. Redirigiendo...');
         setTimeout(() => {
           navigate('/home'); // Redirige a la página principal
         }, 2000); // Redirige después de 2 segundos
       } else {
-        setError('Respuesta de login inválida. No se recibió token.');
+        setError('Respuesta de login inválida. No se recibió un token.');
       }
     } catch (err) {
       console.error('Error al iniciar sesión:', err);
