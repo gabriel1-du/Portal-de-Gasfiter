@@ -131,3 +131,21 @@
   cursor: pointer;
   margin-top: 10px;
 }
+
+/* --- Lado Derecho: Botón de Usuario/Sidebar --- */
+.contenedor-usuario {
+  margin-left: auto; /* Empuja este contenedor al final */
+  flex-shrink: 0;
+}
+
+.btn-usuario {
+  background-color: #fff;
+  border: 1px solid #ced4da;
+  color: #333;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}

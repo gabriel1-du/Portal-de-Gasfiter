@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../style/home.css';
-import { getPublicacionesByNombre } from '../servicios/publicacionesService';
 import { getAllRegions } from '../servicios/regionService';
-import { buscarUsuariosConFiltros } from '../servicios/busquedaUsuarios.js';
-import { buscarPublicacionesConFiltros } from '../servicios/busquedaPublicaciones.js';
 import { getAllComunas } from '../servicios/comunasService';
+import BarraLateral from './BarraLateral'; // 1. Importamos la nueva barra lateral
 
 function BarraBusqueda() {
   const navigate = useNavigate();
   // Estado para controlar si el recuadro de filtros está abierto o cerrado
   const [filtrosAbiertos, setFiltrosAbiertos] = useState(false);
+
+  // 2. Estado para controlar la visibilidad de la barra lateral
+  const [sidebarAbierto, setSidebarAbierto] = useState(false);
+
   const [textoBusqueda, setTextoBusqueda] = useState('');
 
   // --- ESTADOS PARA DATOS DE FILTROS ---
@@ -185,6 +187,19 @@ function BarraBusqueda() {
         </button>
       </form>
 
+      {/* Lado Derecho: Botón para abrir la barra lateral */}
+      <div className="contenedor-usuario">
+        <button 
+          className="btn-usuario" 
+          onClick={() => setSidebarAbierto(true)}
+          title="Menú de usuario"
+        >
+          👤
+        </button>
+      </div>
+
+      {/* 3. El componente de la barra lateral que usa el Portal */}
+      <BarraLateral abierta={sidebarAbierto} alCerrar={() => setSidebarAbierto(false)} />
     </nav>
   );
 }
