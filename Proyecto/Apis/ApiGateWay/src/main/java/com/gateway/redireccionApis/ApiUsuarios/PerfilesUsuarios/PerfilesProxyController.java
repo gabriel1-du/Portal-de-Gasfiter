@@ -80,6 +80,15 @@ public class PerfilesProxyController {
                 return r;
             });
     
+            // POST y PUT requieren rol "user"
+            if (method == HttpMethod.POST || method == HttpMethod.PUT) {
+                if (!"user".equalsIgnoreCase(rol)) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body("{\"error\": \"Operación restringida a usuarios.\"}");
+                }
+            }
+
             // DELETE requiere rol "admin"
             if (method == HttpMethod.DELETE) {
                 if (!"admin".equalsIgnoreCase(rol)) {

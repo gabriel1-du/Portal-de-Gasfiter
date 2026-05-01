@@ -20,13 +20,14 @@ export const getPerfilById = async (id) => {
 };
 
 // Función para crear un nuevo perfil de usuario
-export const createPerfilUsuario = async (perfilData) => {
+export const createPerfilUsuario = async (perfilData, token) => {
   try {
     console.log("Llamando a la API de Perfiles (POST):", `${API_URL_PERFILES}`);
     const response = await fetch(`${API_URL_PERFILES}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // Añadimos el token para autorización
       },
       body: JSON.stringify(perfilData),
     });

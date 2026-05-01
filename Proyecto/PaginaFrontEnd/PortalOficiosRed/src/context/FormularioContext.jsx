@@ -15,7 +15,11 @@ export const FormularioProvider = ({ children }) => {
     numeroTelef: '',
     idRegionUsu: '',
     idComunaUsu: '',
-    idTipoUsu: 1, // Por defecto para cliente
+    idTipoUsu: 1, // 1 para cliente, 2 para oficio
+
+    // Datos específicos de Usuario de Oficio
+    rut: '',
+    idOficio: '',
 
     // Datos de Perfil (FormularioCreacionDePerfilUsuario.jsx)
     nombreApodo: '',
@@ -35,7 +39,7 @@ export const FormularioProvider = ({ children }) => {
     setFormData({
       primerNombre: '', segundoNombre: '', primerApellido: '', segundoApellido: '',
       idSexoUsu: '', correoElec: '', password: '', numeroTelef: '',
-      idRegionUsu: '', idComunaUsu: '', idTipoUsu: 1,
+      idRegionUsu: '', idComunaUsu: '', idTipoUsu: 1, rut: '', idOficio: '',
       nombreApodo: '', foto: '', fotografiaBanner: '', descripcion: '',
     });
   };

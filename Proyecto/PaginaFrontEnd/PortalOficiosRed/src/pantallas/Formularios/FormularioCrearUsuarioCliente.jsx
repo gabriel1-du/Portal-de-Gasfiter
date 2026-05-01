@@ -22,6 +22,10 @@ function FormularioCrearUsuarioCliente() {
 
 
   useEffect(() => {
+    // Al entrar, se limpia el estado para asegurar que es un registro de cliente.
+    // Esto previene la "contaminación" de datos si antes se intentó un registro de oficio.
+    updateFormData({ idTipoUsu: 1, rut: '', idOficio: '' });
+
     const cargarDatosGeograficos = async () => {
       try {
         const [regionesData, comunasData, sexosData] = await Promise.all([

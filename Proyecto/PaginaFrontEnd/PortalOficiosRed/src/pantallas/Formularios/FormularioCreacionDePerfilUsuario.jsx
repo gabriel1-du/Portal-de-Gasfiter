@@ -1,7 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FormularioContext } from '../../context/FormularioContext';
-import { crearUsuarioCliente } from '../../servicios/usuariosService'; // Para crear el usuario
+import { crearUsuarioCliente, crearUsuarioOficio } from '../../servicios/usuariosService'; // Para crear ambos tipos de usuario
+import { login } from '../../servicios/authService'; // Para obtener el token después de crear el usuario
 import { createPerfilUsuario } from '../../servicios/perfilesUsuarioService'; // Para crear el perfil
 import '../../style/formularioCreacionPerfilUsuario.css';
 
@@ -32,37 +33,73 @@ const FormularioCreacionDePerfilUsuario= () => {
     setError(null);
 
     try {
-      // 1. Crear el Usuario
-      const datosUsuarioParaEnviar = {
-        primerNombre: formData.primerNombre,
-        segundoNombre: formData.segundoNombre || null,
-        primerApellido: formData.primerApellido,
-        segundoApellido: formData.segundoApellido || null,
-        idSexoUsu: parseInt(formData.idSexoUsu),
-        foto: formData.foto || null, // La foto de perfil ahora viene de este formulario
-        correoElec: formData.correoElec,
-        password: formData.password,
-        numeroTelef: formData.numeroTelef,
-        idTipoUsu: formData.idTipoUsu, // Ya viene del contexto (1 para cliente)
-        idRegionUsu: formData.idRegionUsu ? parseInt(formData.idRegionUsu) : null,
-        idComunaUsu: formData.idComunaUsu ? parseInt(formData.idComunaUsu) : null,
-      };
+      let nuevoUsuario;
 
-      const nuevoUsuario = await crearUsuarioCliente(datosUsuarioParaEnviar);
+      // 1. Crear el Usuario según su tipo (cliente u oficio)
+      if (formData.idTipoUsu === 2) {
+        // --- Lógica para crear Usuario de Oficio ---
+        const rutLimpio = formData.rut.replace(/[^0-9kK]/g, '').toLowerCase();
+        const rutCuerpo = rutLimpio.slice(0, -1);
+        const rutDv = rutLimpio.slice(-1);
+
+        const datosUsuarioOficio = {
+          primerNombre: formData.primerNombre,
+          segundoNombre: formData.segundoNombre || null,
+          primerApellido: formData.primerApellido,
+          segundoApellido: formData.segundoApellido || null,
+          idSexoUsu: parseInt(formData.idSexoUsu),
+          correoElec: formData.correoElec,
+          password: formData.password,
+          rut: rutCuerpo,
+          rutDv: rutDv,
+          numeroTelef: formData.numeroTelef,
+          idTipoUsu: 2,
+          foto: formData.foto || null,
+          idRegionUsu: formData.idRegionUsu ? parseInt(formData.idRegionUsu) : null,
+          idComunaUsu: formData.idComunaUsu ? parseInt(formData.idComunaUsu) : null,
+          idOficio: formData.idOficio ? parseInt(formData.idOficio) : null,
+        };
+        nuevoUsuario = await crearUsuarioOficio(datosUsuarioOficio);
+      } else {
+        // --- Lógica para crear Usuario Cliente (la que ya existía) ---
+        const datosUsuarioCliente = {
+          primerNombre: formData.primerNombre,
+          segundoNombre: formData.segundoNombre || null,
+          primerApellido: formData.primerApellido,
+          segundoApellido: formData.segundoApellido || null,
+          idSexoUsu: parseInt(formData.idSexoUsu),
+          foto: formData.foto || null,
+          correoElec: formData.correoElec,
+          password: formData.password,
+          numeroTelef: formData.numeroTelef,
+          idTipoUsu: 1,
+          idRegionUsu: formData.idRegionUsu ? parseInt(formData.idRegionUsu) : null,
+          idComunaUsu: formData.idComunaUsu ? parseInt(formData.idComunaUsu) : null,
+        };
+        nuevoUsuario = await crearUsuarioCliente(datosUsuarioCliente);
+      }
+
       // Verificamos que la respuesta del backend sea válida y contenga la propiedad 'idUsuario'
       if (!nuevoUsuario || !nuevoUsuario.idUsuario) {
         throw new Error("No se pudo obtener el ID del usuario recién creado.");
       }
 
-      // 2. Crear el Perfil de Usuario
+      // 2. Iniciar sesión automáticamente para obtener un token
+      const loginResponse = await login({ email: formData.correoElec, password: formData.password });
+      if (!loginResponse || !loginResponse.token) {
+        throw new Error("Fallo al iniciar sesión automáticamente para crear el perfil.");
+      }
+      const token = loginResponse.token;
+
+      // 3. Crear el Perfil de Usuario, ahora con el token de autorización
       const datosPerfilParaEnviar = {
         idUsuario: nuevoUsuario.idUsuario, // Ahora esto funciona porque la verificación anterior es correcta
         nombreApodo: formData.nombreApodo || null,
         fotografiaBanner: formData.fotografiaBanner || null,
         descripcion: formData.descripcion || null,
       };
-
-      await createPerfilUsuario(datosPerfilParaEnviar);
+      
+      await createPerfilUsuario(datosPerfilParaEnviar, token);
 
       // Si todo fue exitoso
       resetFormData(); // Limpiamos el contexto
