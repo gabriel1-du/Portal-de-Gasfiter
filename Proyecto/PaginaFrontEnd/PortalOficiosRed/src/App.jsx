@@ -11,6 +11,8 @@ import FormularioCreacionDePerfilUsuario from './pantallas/Formularios/Formulari
 import ResultadosBusqueda from './pantallas/ResultadosBusqueda'; // Importamos la nueva página de resultados
 import PerfilPantalla from './pantallas/PerfilPantalla'; // Importamos la pantalla de perfil
 import ModificarPerfilUsuario from './pantallas/Formularios/ModificarPerfilUsuario';
+import ConfiguracionesPantalla from './pantallas/ConfiguracionesPantalla';
+import CambiarCorreoPantalla from './pantallas/FormulariosConfig/CambiarCorreoPantalla';
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
           <Route path="/resultados" element={<ResultadosBusqueda />} /> {/* Ruta para la página de resultados */}
           <Route path="/perfil/:idDelPerfil" element={<PerfilPantalla />} /> {/* Ruta para la pantalla de perfil */}
           <Route path="/perfil/modificar" element={<ModificarPerfilUsuario />} />
+          <Route path="/configuracion" element={<ConfiguracionesPantalla />} />
+          <Route path="/configuracion/cambiar-correo" element={<CambiarCorreoPantalla />} />
         </Routes>
       </div>
     </Router>
