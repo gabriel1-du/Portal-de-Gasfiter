@@ -81,7 +81,7 @@ const ConfiguracionesPantalla = () => {
                 </button>
 
                 {/* Botón: Modificar Datos */}
-                <button className="opcion-tarjeta">
+                <button className="opcion-tarjeta" onClick={() => navigate('/configuracion/modificar-datos')}>
                   <div className="opcion-info">
                     <span className="opcion-icono">👤</span>
                     <span className="opcion-texto">Modificar datos personales</span>

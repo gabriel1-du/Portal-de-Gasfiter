@@ -14,6 +14,7 @@ import ModificarPerfilUsuario from './pantallas/Formularios/ModificarPerfilUsuar
 import ConfiguracionesPantalla from './pantallas/ConfiguracionesPantalla';
 import CambiarCorreoPantalla from './pantallas/FormulariosConfig/CambiarCorreoPantalla';
 import CambiarTelefonoPantalla from './pantallas/FormulariosConfig/CambiarTelefonoPantalla';
+import FormularioCambiarDatosUsuario from './pantallas/FormulariosConfig/FormularioCambiarDatosUsuario';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/configuracion" element={<ConfiguracionesPantalla />} />
           <Route path="/configuracion/cambiar-correo" element={<CambiarCorreoPantalla />} />
           <Route path="/configuracion/cambiar-telefono" element={<CambiarTelefonoPantalla />} />
+          <Route path="/configuracion/modificar-datos" element={<FormularioCambiarDatosUsuario />} />
         </Routes>
       </div>
     </Router>
