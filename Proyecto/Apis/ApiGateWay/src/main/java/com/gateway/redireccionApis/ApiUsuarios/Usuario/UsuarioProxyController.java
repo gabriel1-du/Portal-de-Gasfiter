@@ -59,7 +59,7 @@ public class UsuarioProxyController {
         HttpMethod method = HttpMethod.valueOf(request.getMethod());
         System.out.println("USUARIOS targetUrl: " + targetUrl + "  METHOD: " + method);
 
-        if (method == HttpMethod.POST || method == HttpMethod.PUT || method == HttpMethod.DELETE) {
+        if (method == HttpMethod.PUT || method == HttpMethod.DELETE) {
             String authHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

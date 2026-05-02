@@ -20,6 +20,7 @@ import static com.gateway.redireccionApis.ApiUsuarios.Comuna.ComunaPublicRoutes.
 import static com.gateway.redireccionApis.ApiUsuarios.SexoUsuario.SexoUsuarioPublicRoutes.SEXO_USUARIO_PUBLIC_GET;
 import static com.gateway.redireccionApis.ApiUsuarios.Oficio.OficioPublicRoutes.OFICIO_PUBLIC_GET;
 import static com.gateway.redireccionApis.ApiUsuarios.Usuario.UsuarioPublicRoutes.USUARIO_PUBLIC_GET;
+import static com.gateway.redireccionApis.ApiUsuarios.Usuario.UsuarioPublicRoutes.USUARIO_PUBLIC_POST;
 import static com.gateway.redireccionApis.ApiUsuarios.TiposUsuarios.TiposUsuarioPublicRoutes.TIPOS_USUARIO_PUBLIC_GET;
 import static com.gateway.redireccionApis.publicacionesApis.publicacionPublicRoutes.PUBLICACION_PUBLIC_GET;
 import static com.gateway.redireccionApis.ApiUsuarios.PerfilesUsuarios.PerfilesPublicRoutes.PERFILES_PUBLIC_GET;
@@ -45,6 +46,7 @@ public class SecurityConfig {
 
                 // URL públicas API Gestion
                 .requestMatchers(HttpMethod.GET, USUARIO_PUBLIC_GET).permitAll()   // lista pública api GESTION GET
+                .requestMatchers(HttpMethod.POST, USUARIO_PUBLIC_POST).permitAll() // Permitir crear usuarios sin token
 
                 // URL públicas API Regiones
                 .requestMatchers(HttpMethod.GET, REGION_PUBLIC_GET).permitAll()
