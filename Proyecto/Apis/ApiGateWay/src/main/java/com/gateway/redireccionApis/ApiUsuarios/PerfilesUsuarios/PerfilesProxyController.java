@@ -37,15 +37,8 @@ public class PerfilesProxyController {
     @Value("${services.perfiles.base-path}")
     private String perfilesBasePath;
 
-    @RequestMapping(value = {"", "/**"}, method = {RequestMethod.GET})
-    public ResponseEntity<?> proxyPerfilesPublic(HttpServletRequest request,
-                                                 @RequestBody(required = false) String body,
-                                                 @RequestHeader HttpHeaders headers) {
-        return handleProxy(request, body, headers);
-    }
-
-    @RequestMapping(value = {"", "/**"}, method = {RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
-    public ResponseEntity<?> proxyPerfilesSecure(HttpServletRequest request,
+    @RequestMapping(value = {"", "/**"}, method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
+    public ResponseEntity<?> proxyPerfiles(HttpServletRequest request,
                                                  @RequestBody(required = false) String body,
                                                  @RequestHeader HttpHeaders headers) {
         return handleProxy(request, body, headers);
